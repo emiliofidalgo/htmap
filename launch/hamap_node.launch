@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<launch>
+    <!-- Arguments -->
+    <arg name="images_dir" default="/datasets/CityCentre/images" />
+    <arg name="working_dir" default="/home/emilio/Escritorio/Serialization/Hamap/" />
+    <arg name="detector" default="FAST" />
+    <arg name="grid" default="true" />
+    <arg name="grid_rows" default="4" />
+    <arg name="grid_cols" default="4" />
+    <arg name="max_total_kps" default="1000" />
+    <arg name="descriptor" default="LDB" />
+    <arg name="gdescriptor" default="PHOG" />
+    <arg name="load_feats" default="false" />    
+    <arg name="match_method" default="ratio" />
+    <arg name="match_ratio" default="0.8" />
+    <arg name="locLC_thresh" default="0.65" />
+    <arg name="imageLC_min_inliers" default="45" />
+    <arg name="imageLC_disc_recent" default="300" />
+    <arg name="imageLC_tloop" default="0.8" />
+    <arg name="loc_max_images" default="500" />
+    <arg name="max_sim_newnode" default="0.20" />
+    <arg name="batch" default="false" />
+    <arg name="inliers_begin" default="20" />
+    <arg name="inliers_end" default="200" />
+    <arg name="inliers_step" default="15" />
+
+    <!-- Mosaic Builder node -->
+    <node pkg="hamap" type="hamap_node" name="Hamap" output="screen">
+        <param name="images_dir" value="$(arg images_dir)" />
+        <param name="working_dir" value="$(arg working_dir)" />        
+        <param name="detector" value="$(arg detector)" />
+        <param name="grid" value="$(arg grid)" />
+        <param name="grid_rows" value="$(arg grid_rows)" />
+        <param name="grid_cols" value="$(arg grid_cols)" />
+        <param name="max_total_kps" value="$(arg max_total_kps)" />
+        <param name="descriptor" value="$(arg descriptor)" />
+        <param name="gdescriptor" value="$(arg gdescriptor)" />
+        <param name="load_feats" value="$(arg load_feats)" />        
+        <param name="match_method" value="$(arg match_method)" />
+        <param name="match_ratio" value="$(arg match_ratio)" />
+        <param name="locLC_thresh" value="$(arg locLC_thresh)" />
+        <param name="imageLC_min_inliers" value="$(arg imageLC_min_inliers)" />
+        <param name="imageLC_disc_recent" value="$(arg imageLC_disc_recent)" />
+        <param name="imageLC_tloop" value="$(arg imageLC_tloop)" />
+        <param name="max_sim_newnode" value="$(arg max_sim_newnode)" />
+        <param name="batch" value="$(arg batch)" />
+        <param name="inliers_begin" value="$(arg inliers_begin)" />
+        <param name="inliers_end" value="$(arg inliers_end)" />
+        <param name="inliers_step" value="$(arg inliers_step)" />
+    </node>
+
+</launch>
