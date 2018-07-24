@@ -1,13 +1,32 @@
+/*
+* This file is part of htmap.
+*
+* Copyright (C) 2018 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
+*
+* htmap is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* htmap is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with htmap. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef _GLOBALDESCRIPTOR_H_
 #define _GLOBALDESCRIPTOR_H_
 
 #include <opencv2/opencv.hpp>
-#include <opencv2/nonfree/nonfree.hpp>
+#include <opencv2/xfeatures2d.hpp>
 
-#include "hamap/util/Util.h"
+#include "htmap/util/Util.h"
 #include "ldb.h"
 
-namespace hamap
+namespace htmap
 {
 
 enum GlobalDescriptorType
@@ -64,12 +83,12 @@ class WISIFTDescriptor : public GlobalDescriptor
 	public:
         WISIFTDescriptor(const GlobalDescriptorParams& params) :
             GlobalDescriptor(GDESCRIPTOR_WISIFT, 256)
-	{			
+	{
 			parseParameters(params);
     }
 
     void parseParameters(const GlobalDescriptorParams& params)
-	{		
+	{
     }
 
     void describe(const cv::Mat& image, cv::Mat& desc);

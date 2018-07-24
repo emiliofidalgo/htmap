@@ -1,6 +1,25 @@
-#include "hamap/imgdesc/GlobalDescriptor.h"
+/*
+* This file is part of htmap.
+*
+* Copyright (C) 2018 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
+*
+* htmap is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* htmap is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with htmap. If not, see <http://www.gnu.org/licenses/>.
+*/
 
-namespace hamap
+#include "htmap/imgdesc/GlobalDescriptor.h"
+
+namespace htmap
 {
 
 void WISIFTDescriptor::describe(const cv::Mat& image, cv::Mat& desc)
@@ -26,7 +45,7 @@ void WISIFTDescriptor::describe(const cv::Mat& image, cv::Mat& desc)
     kps.push_back(kp);
 
     cv::Mat descp_l, descp_r;
-    cv::SiftDescriptorExtractor extractor;
+    cv::xfeatures2d::SiftDescriptorExtractor extractor;
     extractor.compute(lpatch, kps, descp_l);
     extractor.compute(rpatch, kps, descp_r);
 
@@ -60,12 +79,12 @@ void WISURFDescriptor::describe(const cv::Mat& image, cv::Mat& desc)
     kps.push_back(kp);
 
     cv::Mat descp_l, descp_r;
-    cv::SurfDescriptorExtractor extractor(5000.0, 4, 3, true, true);
-    extractor.compute(lpatch, kps, descp_l);
-    extractor.compute(rpatch, kps, descp_r);
+    cv::Ptr<cv::Feature2D> extractor = cv::xfeatures2d::SURF::create(5000.0, 4, 3, true, true);
+    extractor->compute(lpatch, kps, descp_l);
+    extractor->compute(rpatch, kps, descp_r);
 
     // Merging the descriptors
-    int ncomps = extractor.descriptorSize();
+    int ncomps = extractor->descriptorSize();
     desc = cv::Mat::zeros(1, ncomps * 2, CV_32F);
     descp_l.copyTo(desc.colRange(0, ncomps));
     descp_r.copyTo(desc.colRange(ncomps, ncomps * 2));
@@ -94,7 +113,7 @@ void BRIEFGistDescriptor::describe(const cv::Mat& image, cv::Mat& desc)
 
     // Describing patches using BRIEF
     cv::Mat descp_l, descp_r;
-    cv::BriefDescriptorExtractor extractor(desc_size);
+    cv::xfeatures2d::BriefDescriptorExtractor extractor;
     extractor.compute(lpatch, kps, descp_l);
     extractor.compute(rpatch, kps, descp_r);
 

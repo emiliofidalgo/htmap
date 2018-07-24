@@ -1,9 +1,28 @@
+/*
+* This file is part of htmap.
+*
+* Copyright (C) 2018 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
+*
+* htmap is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* htmap is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with htmap. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef IMAGEHAMAP_H
 #define IMAGEHAMAP_H
 
 #include <opencv2/opencv.hpp>
 
-namespace hamap
+namespace htmap
 {
 
 struct Image
@@ -29,13 +48,13 @@ struct Image
     void load(const std::string& file)
     {
         cv::FileStorage fs(file, cv::FileStorage::READ);
-        image_id = static_cast<unsigned>((int)fs["image_id"]);        
-        image_filename = (std::string)fs["image_filename"];        
-        image = cv::imread(image_filename);        
+        image_id = static_cast<unsigned>((int)fs["image_id"]);
+        image_filename = (std::string)fs["image_filename"];
+        image = cv::imread(image_filename);
         kps.clear();
-        cv::read(fs["kps"], kps);        
+        cv::read(fs["kps"], kps);
         fs["dscs"] >> dscs;
-        fs["gdsc"] >> gdsc;        
+        fs["gdsc"] >> gdsc;
         fs.release();
     }
 

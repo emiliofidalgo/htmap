@@ -1,12 +1,31 @@
+/*
+* This file is part of htmap.
+*
+* Copyright (C) 2018 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
+*
+* htmap is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* htmap is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with htmap. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef KEYPOINTDESCRIPTOR_H_
 #define KEYPOINTDESCRIPTOR_H_
 
 #include <opencv2/opencv.hpp>
-#include <opencv2/nonfree/nonfree.hpp>
+#include <opencv2/xfeatures2d.hpp>
 
 #include "ldb.h"
 
-namespace hamap
+namespace htmap
 {
 
 enum KeypointDescriptorType
@@ -16,8 +35,8 @@ enum KeypointDescriptorType
 	DESCRIPTOR_BRISK,
 	DESCRIPTOR_FREAK,
 	DESCRIPTOR_SIFT,
-    DESCRIPTOR_SURF,
-    DESCRIPTOR_LDB
+  DESCRIPTOR_SURF,
+  DESCRIPTOR_LDB
 };
 
 // ---
@@ -50,19 +69,15 @@ typedef struct _KeypointDescriptorParams
 		int _brisk_octaves;
 
 		// BRIEF params
-		//
 
 		// ORB params
-		//
 
-        // SIFT params
-		//
+    // SIFT params
 
-        // SURF params
-        //
+    // SURF params
+    int _surf_extended;
 
-        // LDB params
-		int _surf_extended;
+    // LDB params
 
 } KeypointDescriptorParams;
 
@@ -74,13 +89,11 @@ class KeypointDescriptor
 	public:
 		KeypointDescriptor(const KeypointDescriptorType& type, const int nbytes) :
 			_type(type),
-			_desc_size(nbytes)
-        {}
-		virtual ~KeypointDescriptor()
-        {}
+			_desc_size(nbytes) {}
+		virtual ~KeypointDescriptor() {}
 
-        inline int getDescSize() { return _desc_size; }
-        inline KeypointDescriptorType getType() { return _type; }
+    inline int getDescSize() { return _desc_size; }
+    inline KeypointDescriptorType getType() { return _type; }
 
 		static KeypointDescriptor* create(const std::string& name, const KeypointDescriptorParams& params);
 
@@ -103,33 +116,32 @@ class FREAKKeypointDescriptor : public KeypointDescriptor
 			_ori_norm(true),
 			_scale_norm(true),
 			_pattern_scale(22.0f),
-			_octaves(4),
-			_descriptor(cv::DescriptorExtractor::create("FREAK"))
-	{
+			_octaves(4)
+		{
 			parseParameters(params);
-			_descriptor->setBool("orientationNormalized", _ori_norm);
-			_descriptor->setBool("scaleNormalized", _scale_norm);
-			_descriptor->setDouble("patternScale", _pattern_scale);
-			_descriptor->setInt("nbOctave", _octaves);
-    }
+			_descriptor = cv::xfeatures2d::FREAK::create(_ori_norm,
+																			_scale_norm,
+																			_pattern_scale,
+																			_octaves);
+	  }
 
-	void parseParameters(const KeypointDescriptorParams& params)
-	{
-		_type = params._type;
-		_ori_norm = params._freak_ori_norm;
-		_scale_norm = params._freak_scale_norm;
-		_pattern_scale = params._freak_pattern_scale;
-		_octaves = params._freak_octaves;
-    }
+		void parseParameters(const KeypointDescriptorParams& params)
+		{
+			_type = params._type;
+			_ori_norm = params._freak_ori_norm;
+			_scale_norm = params._freak_scale_norm;
+			_pattern_scale = params._freak_pattern_scale;
+			_octaves = params._freak_octaves;
+		}
 
-	void describe(const cv::Mat& image, std::vector<cv::KeyPoint>& kps, cv::Mat& descs);
+		void describe(const cv::Mat& image, std::vector<cv::KeyPoint>& kps, cv::Mat& descs);
 
 	protected:
 		bool _ori_norm;
 		bool _scale_norm;
 		float _pattern_scale;
 		int _octaves;
-		cv::Ptr<cv::DescriptorExtractor> _descriptor;
+		cv::Ptr<cv::Feature2D> _descriptor;
 };
 
 // ---
@@ -141,27 +153,25 @@ class BRISKKeypointDescriptor : public KeypointDescriptor
 		BRISKKeypointDescriptor(const KeypointDescriptorParams& params) :
 			KeypointDescriptor(DESCRIPTOR_BRISK, 64),
 			_thresh(30),
-			_octaves(3),
-			_descriptor(cv::DescriptorExtractor::create("BRISK"))
-	{
+			_octaves(3)
+		{
 			parseParameters(params);
-			_descriptor->setInt("thres", _thresh);
-			_descriptor->setInt("octaves", _octaves);
+			_descriptor = cv::BRISK::create(_thresh, _octaves);
     }
 
-	void parseParameters(const KeypointDescriptorParams& params)
-	{
-		_type = params._type;
-		_thresh = params._brisk_thresh;
-		_octaves = params._brisk_octaves;
+		void parseParameters(const KeypointDescriptorParams& params)
+		{
+			_type = params._type;
+			_thresh = params._brisk_thresh;
+			_octaves = params._brisk_octaves;
     }
 
-	void describe(const cv::Mat& image, std::vector<cv::KeyPoint>& kps, cv::Mat& descs);
+		void describe(const cv::Mat& image, std::vector<cv::KeyPoint>& kps, cv::Mat& descs);
 
 	protected:
 		int _thresh;
 		int _octaves;
-		cv::Ptr<cv::DescriptorExtractor> _descriptor;
+		cv::Ptr<cv::Feature2D> _descriptor;
 };
 
 // ---
@@ -171,21 +181,21 @@ class BRIEFKeypointDescriptor : public KeypointDescriptor
 {
 	public:
 		BRIEFKeypointDescriptor(const KeypointDescriptorParams& params) :
-			KeypointDescriptor(DESCRIPTOR_BRIEF, 32),
-			_descriptor(cv::DescriptorExtractor::create("BRIEF"))
-	{
+			KeypointDescriptor(DESCRIPTOR_BRIEF, 32)
+		{
 			parseParameters(params);
+			_descriptor = cv::xfeatures2d::BriefDescriptorExtractor::create();
     }
 
-	void parseParameters(const KeypointDescriptorParams& params)
-	{
-		_type = params._type;
+		void parseParameters(const KeypointDescriptorParams& params)
+		{
+			_type = params._type;
     }
 
-	void describe(const cv::Mat& image, std::vector<cv::KeyPoint>& kps, cv::Mat& descs);
+		void describe(const cv::Mat& image, std::vector<cv::KeyPoint>& kps, cv::Mat& descs);
 
 	protected:
-		cv::Ptr<cv::DescriptorExtractor> _descriptor;
+		cv::Ptr<cv::Feature2D> _descriptor;
 };
 
 // ---
@@ -195,21 +205,21 @@ class ORBKeypointDescriptor : public KeypointDescriptor
 {
 	public:
 		ORBKeypointDescriptor(const KeypointDescriptorParams& params) :
-			KeypointDescriptor(DESCRIPTOR_ORB, 32),
-			_descriptor(cv::DescriptorExtractor::create("ORB"))
-	{
+			KeypointDescriptor(DESCRIPTOR_ORB, 32)
+		{
 			parseParameters(params);
+			_descriptor = cv::ORB::create();
     }
 
-	void parseParameters(const KeypointDescriptorParams& params)
-	{
+		void parseParameters(const KeypointDescriptorParams& params)
+		{
 		_type = params._type;
     }
 
-	void describe(const cv::Mat& image, std::vector<cv::KeyPoint>& kps, cv::Mat& descs);
+		void describe(const cv::Mat& image, std::vector<cv::KeyPoint>& kps, cv::Mat& descs);
 
 	protected:
-		cv::Ptr<cv::DescriptorExtractor> _descriptor;
+		cv::Ptr<cv::Feature2D> _descriptor;
 };
 
 // ---
@@ -219,22 +229,21 @@ class SIFTKeypointDescriptor : public KeypointDescriptor
 {
 	public:
 		SIFTKeypointDescriptor(const KeypointDescriptorParams& params) :
-			KeypointDescriptor(DESCRIPTOR_SIFT, 128),
-			_descriptor(cv::DescriptorExtractor::create("SIFT"))
-	{
-			cv::initModule_nonfree();
+			KeypointDescriptor(DESCRIPTOR_SIFT, 128)
+		{
 			parseParameters(params);
+			_descriptor = cv::xfeatures2d::SIFT::create();
     }
 
-	void parseParameters(const KeypointDescriptorParams& params)
-	{
-		_type = params._type;
+		void parseParameters(const KeypointDescriptorParams& params)
+		{
+			_type = params._type;
     }
 
-	void describe(const cv::Mat& image, std::vector<cv::KeyPoint>& kps, cv::Mat& descs);
+		void describe(const cv::Mat& image, std::vector<cv::KeyPoint>& kps, cv::Mat& descs);
 
 	protected:
-		cv::Ptr<cv::DescriptorExtractor> _descriptor;
+		cv::Ptr<cv::Feature2D> _descriptor;
 };
 
 // ---
@@ -245,29 +254,28 @@ class SURFKeypointDescriptor : public KeypointDescriptor
 	public:
 		SURFKeypointDescriptor(const KeypointDescriptorParams& params) :
 			KeypointDescriptor(DESCRIPTOR_SURF, 128),
-			_extended(1),
-			_descriptor(cv::DescriptorExtractor::create("SURF"))
-	{
-			cv::initModule_nonfree();
+			_extended(1)
+		{
 			parseParameters(params);
-			_descriptor->setInt("extended", _extended);
 			if (!_extended)
 			{
 				_desc_size = 64;
 			}
+
+			_descriptor = cv::xfeatures2d::SURF::create(100, 4, 3, _extended);
     }
 
-	void parseParameters(const KeypointDescriptorParams& params)
-	{
-		_type = params._type;
-		_extended = params._surf_extended;
+		void parseParameters(const KeypointDescriptorParams& params)
+		{
+			_type = params._type;
+			_extended = params._surf_extended;
     }
 
-	void describe(const cv::Mat& image, std::vector<cv::KeyPoint>& kps, cv::Mat& descs);
+		void describe(const cv::Mat& image, std::vector<cv::KeyPoint>& kps, cv::Mat& descs);
 
 	protected:
 		int _extended;
-		cv::Ptr<cv::DescriptorExtractor> _descriptor;
+		cv::Ptr<cv::Feature2D> _descriptor;
 };
 
 // ---
@@ -276,18 +284,18 @@ class SURFKeypointDescriptor : public KeypointDescriptor
 class LDBKeypointDescriptor : public KeypointDescriptor
 {
     public:
-        LDBKeypointDescriptor(const KeypointDescriptorParams& params) :
+      LDBKeypointDescriptor(const KeypointDescriptorParams& params) :
             KeypointDescriptor(DESCRIPTOR_LDB, 32)
-    {
+    	{
             parseParameters(params);
-    }
+    	}
 
-    void parseParameters(const KeypointDescriptorParams& params)
-    {
+    	void parseParameters(const KeypointDescriptorParams& params)
+    	{
         _type = params._type;
-    }
+    	}
 
-    void describe(const cv::Mat& image, std::vector<cv::KeyPoint>& kps, cv::Mat& descs);
+    	void describe(const cv::Mat& image, std::vector<cv::KeyPoint>& kps, cv::Mat& descs);
 
     protected:
         LdbDescriptorExtractor _ldb;

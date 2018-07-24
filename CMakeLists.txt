@@ -1,14 +1,16 @@
 cmake_minimum_required(VERSION 2.8.3)
-
-project(hamap)
-
-# Finding headers and launch files for QtCreator
-file(GLOB_RECURSE HDRS ${CMAKE_CURRENT_SOURCE_DIR} *.h *.hpp)
-file(GLOB_RECURSE SRCS ${CMAKE_CURRENT_SOURCE_DIR} *.cxx *.cpp *.c *.py)
-file(GLOB_RECURSE LNCH ${CMAKE_CURRENT_SOURCE_DIR} *.launch)
+project(htmap)
 
 # Catkin dependencies
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs sensor_msgs image_transport cv_bridge geometry_msgs obindex)
+find_package(catkin REQUIRED COMPONENTS
+    roscpp
+    std_msgs
+    sensor_msgs
+    image_transport
+    cv_bridge
+    geometry_msgs
+    obindex
+    )
 
 # System dependencies
 find_package(OpenCV REQUIRED)
@@ -23,9 +25,16 @@ endif()
 # Defining the package
 catkin_package(
     INCLUDE_DIRS include
-    LIBRARIES keypoint_description_hamap hamap
-    CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs image_transport cv_bridge geometry_msgs
-    DEPENDS OpenCV Boost OpenMP
+    LIBRARIES keypoint_description_htmap #htmap
+    CATKIN_DEPENDS
+    roscpp
+    std_msgs
+    sensor_msgs
+    image_transport
+    cv_bridge
+    geometry_msgs
+    obindex
+    DEPENDS OpenCV Boost
 )
 
 ###########
@@ -33,33 +42,35 @@ catkin_package(
 ###########
 
 # Including directories.
-include_directories(include ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
-
-# Custom target to include headers and launch files in QtCreator
-add_custom_target(dtarget_hamap SOURCES ${HDRS} ${SRCS} ${LNCH})
+include_directories(
+    include
+    ${catkin_INCLUDE_DIRS}
+    ${OpenCV_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS})
 
 # Description Library
-add_library(keypoint_description_hamap
+add_library(keypoint_description_htmap
+    src/imgdesc/GridAdaptedFeatureDetector.cpp
     src/imgdesc/KeypointDetector.cpp
     src/imgdesc/KeypointDescriptor.cpp
     src/imgdesc/GlobalDescriptor.cpp
     src/imgdesc/ldb.cpp)
-target_link_libraries(keypoint_description_hamap ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+target_link_libraries(keypoint_description_htmap ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
-# Hamap Library
-set(HAMAP_SRCS
-    src/bayes/BayesFilter.cpp    
-    src/lc/LoopCloser.cpp
-    src/map/HighLevelMap.cpp
-    src/map/Location.cpp
-    src/util/Params.cpp
-    src/util/Statistics.cpp
-    src/util/Util.cpp
-    src/Hamap.cpp
-)
-add_library(hamap ${HAMAP_SRCS})
-target_link_libraries(hamap keypoint_description_hamap ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${Boost_LIBRARIES})
+# # Hamap Library
+# set(HAMAP_SRCS
+#     src/bayes/BayesFilter.cpp
+#     src/lc/LoopCloser.cpp
+#     src/map/HighLevelMap.cpp
+#     src/map/Location.cpp
+#     src/util/Params.cpp
+#     src/util/Statistics.cpp
+#     src/util/Util.cpp
+#     src/Hamap.cpp
+# )
+# add_library(hamap ${HAMAP_SRCS})
+# target_link_libraries(hamap keypoint_description_hamap ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${Boost_LIBRARIES})
 
-# Hamap Node
-add_executable(hamap_node src/nodes/Hamap_node.cpp)
-target_link_libraries(hamap_node hamap)
+# # Hamap Node
+# add_executable(hamap_node src/nodes/Hamap_node.cpp)
+# target_link_libraries(hamap_node hamap)

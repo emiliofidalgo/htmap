@@ -1,10 +1,31 @@
+/*
+* This file is part of htmap.
+*
+* Copyright (C) 2018 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
+*
+* htmap is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* htmap is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with htmap. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef KEYPOINTDETECTOR_H_
 #define KEYPOINTDETECTOR_H_
 
 #include <opencv2/opencv.hpp>
-#include <opencv2/nonfree/nonfree.hpp>
+#include <opencv2/xfeatures2d.hpp>
 
-namespace hamap
+#include "htmap/imgdesc/GridAdaptedFeatureDetector.h"
+
+namespace htmap
 {
 
 enum KeypointDetectorType
@@ -92,15 +113,15 @@ typedef struct _KeypointDetectorParams
 class KeypointDetector
 {
 	public:
-        KeypointDetector(const KeypointDetectorType type) : _detector(0), _type(type) {}
-        virtual ~KeypointDetector() {}
+    KeypointDetector(const KeypointDetectorType type) : _type(type) {}
+    virtual ~KeypointDetector() {}
 
 		static KeypointDetector* create(const std::string& name, const KeypointDetectorParams& params);
 
 		virtual void parseParameters(const KeypointDetectorParams& params) = 0;
 		virtual void detect(const cv::Mat& image, std::vector<cv::KeyPoint>& kps) = 0;
 
-		cv::Ptr<cv::FeatureDetector> _detector;
+		cv::Ptr<cv::Feature2D> _detector;
 
 	protected:
 		KeypointDetectorType _type;
@@ -117,12 +138,9 @@ class FASTKeypointDetector : public KeypointDetector
 			_thresh(10),
 			_nonmaxSup(true)
 	{
-			parseParameters(params);
-			_detector = cv::FeatureDetector::create("FAST");
-			_detector->setInt("threshold", _thresh);
-			_detector->setBool("nonmaxSuppression", _nonmaxSup);
-
-    }
+		parseParameters(params);
+		_detector = cv::FastFeatureDetector::create(_thresh, _nonmaxSup);
+  }
 
 	void parseParameters(const KeypointDetectorParams& params)
 	{
@@ -149,23 +167,20 @@ class BRISKKeypointDetector : public KeypointDetector
 			_octaves(3)
 	{
 			parseParameters(params);
-			_detector = cv::FeatureDetector::create("BRISK");
-			_detector->setInt("thres", _thresh);
-			_detector->setInt("octaves", _octaves);
-    }
+			_detector = cv::BRISK::create(_thresh, _octaves);
+  }
 
 	void parseParameters(const KeypointDetectorParams& params)
 	{
 		_type = params._type;
 		_thresh = params._brisk_thresh;
 		_octaves = params._brisk_octaves;
-    }
+  }
 
 	void detect(const cv::Mat& image, std::vector<cv::KeyPoint>& kps);
 
 	int _thresh;
 	int _octaves;
-//	cv::Ptr<cv::FeatureDetector> _detector;
 };
 
 // ---
@@ -182,15 +197,13 @@ class SIFTKeypointDetector : public KeypointDetector
 			_edgeThresh(10.0),
 			_sigma(1.6)
 	{
-			cv::initModule_nonfree();
 			parseParameters(params);
-			_detector = cv::FeatureDetector::create("SIFT");
-			_detector->setInt("nFeatures", _nfeats);
-			_detector->setInt("nOctaveLayers", _noctaves);
-			_detector->setDouble("contrastThreshold", _contrastThresh);
-			_detector->setDouble("edgeThreshold", _edgeThresh);
-			_detector->setDouble("sigma", _sigma);
-    }
+			_detector = cv::xfeatures2d::SIFT::create(_nfeats,
+																								_noctaves,
+																								_contrastThresh,
+																								_edgeThresh,
+																								_sigma);
+  }
 
 	void parseParameters(const KeypointDetectorParams& params)
 	{
@@ -200,7 +213,7 @@ class SIFTKeypointDetector : public KeypointDetector
 		_contrastThresh = params._sift_contrastThresh;
 		_sigma = params._sift_sigma;
 		_type = params._type;
-    }
+  }
 
 	void detect(const cv::Mat& image, std::vector<cv::KeyPoint>& kps);
 
@@ -209,7 +222,6 @@ class SIFTKeypointDetector : public KeypointDetector
 	double _contrastThresh;
 	double _edgeThresh;
 	double _sigma;
-//	cv::Ptr<cv::FeatureDetector> _detector;
 };
 
 // ---
@@ -225,14 +237,13 @@ class SURFKeypointDetector : public KeypointDetector
 			_nlayers(2),
 			_upright(0)
 	{
-			cv::initModule_nonfree();
 			parseParameters(params);
-			_detector = cv::FeatureDetector::create("SURF");
-			_detector->setDouble("hessianThreshold", _hessianThresh);
-			_detector->setInt("nOctaves", _noctaves);
-			_detector->setInt("nOctaveLayers", _nlayers);
-			_detector->setInt("upright", _upright);
-    }
+			_detector = cv::xfeatures2d::SURF::create(_hessianThresh,
+																								_noctaves,
+																								_nlayers,
+																								false,
+																								_upright);
+  }
 
 	void parseParameters(const KeypointDetectorParams& params)
 	{
@@ -240,7 +251,7 @@ class SURFKeypointDetector : public KeypointDetector
 		_noctaves = params._surf_noctaves;
 		_nlayers = params._surf_nlayers;
 		_upright = params._surf_upright;
-    }
+  }
 
 	void detect(const cv::Mat& image, std::vector<cv::KeyPoint>& kps);
 
@@ -248,7 +259,6 @@ class SURFKeypointDetector : public KeypointDetector
 	int _noctaves;
 	int _nlayers;
 	int _upright;
-//	cv::Ptr<cv::FeatureDetector> _detector;
 };
 
 // ---
@@ -265,13 +275,15 @@ class ORBKeypointDetector : public KeypointDetector
 			_patchsize(31)
 	{
 			parseParameters(params);
-			_detector = cv::FeatureDetector::create("ORB");
-			_detector->setInt("nFeatures", _nfeats);
-			_detector->setDouble("scaleFactor", _scalefactor);
-			_detector->setInt("nLevels", _nlevels);
-			_detector->setInt("patchSize", _patchsize);
-			_detector->setInt("edgeThreshold", _patchsize);
-    }
+			_detector = cv::ORB::create(_nfeats,
+																	_scalefactor,
+																	_nlevels,
+																	31,
+																	0,
+																	2,
+																	cv::ORB::HARRIS_SCORE,
+																	_patchsize);
+  }
 
 	void parseParameters(const KeypointDetectorParams& params)
 	{
@@ -279,7 +291,7 @@ class ORBKeypointDetector : public KeypointDetector
 		_scalefactor = params._orb_scalefactor;
 		_nlevels = params._orb_nlevels;
 		_patchsize = params._orb_patchsize;
-    }
+  }
 
 	void detect(const cv::Mat& image, std::vector<cv::KeyPoint>& kps);
 
@@ -287,7 +299,6 @@ class ORBKeypointDetector : public KeypointDetector
 	double _scalefactor;
 	int _nlevels;
 	int _patchsize;
-//	cv::Ptr<cv::FeatureDetector> _detector;
 };
 
 // ---
@@ -305,13 +316,12 @@ class StarKeypointDetector : public KeypointDetector
 			_suppressnonmaxsize(5)
 	{
 			parseParameters(params);
-			_detector = cv::FeatureDetector::create("STAR");
-			_detector->setInt("maxSize", _maxsize);
-			_detector->setInt("responseThreshold", _responsethresh);
-			_detector->setInt("lineThresholdProjected", _linethreshproj);
-			_detector->setInt("lineThresholdBinarized", _linethreshbin);
-			_detector->setInt("suppressNonmaxSize", _suppressnonmaxsize);
-    }
+			_detector = cv::xfeatures2d::StarDetector::create(_maxsize,
+																												_responsethresh,
+																												_linethreshproj,
+																												_linethreshbin,
+																												_suppressnonmaxsize);
+  }
 
 	void parseParameters(const KeypointDetectorParams& params)
 	{
@@ -320,7 +330,7 @@ class StarKeypointDetector : public KeypointDetector
 		_linethreshproj = params._star_linethreshproj;
 		_linethreshbin = params._star_linethreshbin;
 		_suppressnonmaxsize = params._star_suppressnonmaxsize;
-    }
+  }
 
 	void detect(const cv::Mat& image, std::vector<cv::KeyPoint>& kps);
 
@@ -329,10 +339,9 @@ class StarKeypointDetector : public KeypointDetector
 	int _linethreshproj;
 	int _linethreshbin;
 	int _suppressnonmaxsize;
-//	cv::Ptr<cv::FeatureDetector> _detector;
 };
 
-cv::FeatureDetector* convertToGridDetector(const int grid_rows, const int grid_cols, const int max_feats, cv::Ptr<cv::FeatureDetector>& det);
+cv::Feature2D* convertToGridDetector(const int grid_rows, const int grid_cols, const int max_feats, cv::Ptr<cv::Feature2D>& det);
 
 }
 

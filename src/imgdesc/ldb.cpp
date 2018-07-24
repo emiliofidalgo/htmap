@@ -3,13 +3,13 @@
 	Created on: Apr 10, 2013
 	Author: xinyang
 
-    LDB - Local Difference Binary 
+    LDB - Local Difference Binary
     Reference implementation of
-    [1] Xin Yang and Kwang-Ting(Tim) Cheng. LDB: An Ultra-Fast Feature for 
+    [1] Xin Yang and Kwang-Ting(Tim) Cheng. LDB: An Ultra-Fast Feature for
 	Scalable Augmened Reality on Mobile Device. In Proceedings of
     IEEE International Symposium on Mixed and Augmented Reality(ISMAR2012).
 
-    Copyright (C) 2012  The Learning-Based Multimedia, University of California, 
+    Copyright (C) 2012  The Learning-Based Multimedia, University of California,
 	Santa Barbara, Xin Yang, Kwang-Ting(Tim) Cheng.
 
     This file is part of LDB.
@@ -33,7 +33,7 @@
 #include <set>
 #include <vector>
 
-#include "hamap/imgdesc/ldb.h"
+#include "htmap/imgdesc/ldb.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::vector<std::vector<std::vector<int> > > rotated_X_;
@@ -63,39 +63,39 @@ int n_levels = 0;
 #define LEVEL5
 
 static int bit_pattern_31_[selected_bits * 4]; //number of tests * 4 (x1,y1,x2,y2)
-static int bit_pattern_256_[selected_bits] = 
+static int bit_pattern_256_[selected_bits] =
 { //trained based on Liberty dataset
-	3, 4, 11, 12, 13, 34, 47, 48, 
-	50, 56, 58, 59, 62, 71, 78, 79, 
-	101, 102, 109, 119, 122, 125, 126, 135, 
-	140, 147, 160, 175, 181, 182, 187, 193, 
-	199, 215, 220, 224, 227, 232, 234, 235, 
-	244, 246, 260, 261, 263, 273, 274, 280, 
-	285, 286, 288, 299, 300, 310, 327, 330, 
-	331, 343, 346, 353, 360, 361, 362, 365, 
-	386, 389, 398, 401, 411, 412, 415, 423, 
-	424, 427, 428, 430, 432, 433, 436, 448, 
-	451, 454, 463, 464, 469, 477, 478, 480, 
-	495, 512, 517, 520, 541, 550, 553, 556, 
-	566, 571, 581, 585, 587, 592, 596, 609, 
-	610, 611, 614, 615, 640, 655, 657, 664, 
-	670, 672, 673, 684, 685, 699, 703, 705, 
-	706, 718, 720, 721, 733, 734, 737, 742, 
-	744, 745, 748, 749, 752, 764, 766, 774, 
-	775, 778, 779, 781, 789, 794, 801, 804, 
-	808, 815, 816, 817, 827, 828, 835, 838, 
-	841, 844, 846, 850, 853, 855, 868, 879, 
-	885, 896, 899, 907, 914, 922, 924, 925, 
-	934, 937, 938, 940, 943, 953, 954, 958, 
-	968, 969, 970, 973, 990, 991, 994, 1000, 
-	1003, 1005, 1007, 1020, 1027, 1029, 1030, 1033, 
-	1036, 1037, 1038, 1042, 1044, 1048, 1052, 1068, 
-	1072, 1078, 1098, 1100, 1117, 1125, 1126, 1132, 
-	1134, 1135, 1140, 1144, 1149, 1150, 1153, 1159, 
-	1163, 1168, 1171, 1172, 1175, 1183, 1187, 1192, 
-	1195, 1198, 1200, 1202, 1207, 1212, 1215, 1228, 
-	1247, 1255, 1262, 1265, 1278, 1283, 1286, 1289, 
-	1290, 1305, 1311, 1312, 1314, 1321, 1328, 1331, 
+	3, 4, 11, 12, 13, 34, 47, 48,
+	50, 56, 58, 59, 62, 71, 78, 79,
+	101, 102, 109, 119, 122, 125, 126, 135,
+	140, 147, 160, 175, 181, 182, 187, 193,
+	199, 215, 220, 224, 227, 232, 234, 235,
+	244, 246, 260, 261, 263, 273, 274, 280,
+	285, 286, 288, 299, 300, 310, 327, 330,
+	331, 343, 346, 353, 360, 361, 362, 365,
+	386, 389, 398, 401, 411, 412, 415, 423,
+	424, 427, 428, 430, 432, 433, 436, 448,
+	451, 454, 463, 464, 469, 477, 478, 480,
+	495, 512, 517, 520, 541, 550, 553, 556,
+	566, 571, 581, 585, 587, 592, 596, 609,
+	610, 611, 614, 615, 640, 655, 657, 664,
+	670, 672, 673, 684, 685, 699, 703, 705,
+	706, 718, 720, 721, 733, 734, 737, 742,
+	744, 745, 748, 749, 752, 764, 766, 774,
+	775, 778, 779, 781, 789, 794, 801, 804,
+	808, 815, 816, 817, 827, 828, 835, 838,
+	841, 844, 846, 850, 853, 855, 868, 879,
+	885, 896, 899, 907, 914, 922, 924, 925,
+	934, 937, 938, 940, 943, 953, 954, 958,
+	968, 969, 970, 973, 990, 991, 994, 1000,
+	1003, 1005, 1007, 1020, 1027, 1029, 1030, 1033,
+	1036, 1037, 1038, 1042, 1044, 1048, 1052, 1068,
+	1072, 1078, 1098, 1100, 1117, 1125, 1126, 1132,
+	1134, 1135, 1140, 1144, 1149, 1150, 1153, 1159,
+	1163, 1168, 1171, 1172, 1175, 1183, 1187, 1192,
+	1195, 1198, 1200, 1202, 1207, 1212, 1215, 1228,
+	1247, 1255, 1262, 1265, 1278, 1283, 1286, 1289,
+	1290, 1305, 1311, 1312, 1314, 1321, 1328, 1331,
 	1334, 1336, 1343, 1350, 1351, 1354, 1356, 1373
 };
 
@@ -311,13 +311,13 @@ static void computeLdbDescriptor(const cv::KeyPoint& kpt, const cv::Mat& img, co
 				- win_integral_image.at<int>(coordinates2by2_[i][3]+offset, coordinates2by2_[i][2]+offset)
 				- win_integral_image.at<int>(coordinates2by2_[i][5]+offset, coordinates2by2_[i][4]+offset);
 
-			dx2by2[i] = sum2by2[i] 
+			dx2by2[i] = sum2by2[i]
 			- 2*(win_integral_image.at<int>(coordinates2by2_[i][1]+offset, coordinates2by2_[i][0]+offset)
 				+ win_integral_image.at<int>(coordinates2by2_[i][13]+offset, coordinates2by2_[i][12]+offset)
 				- win_integral_image.at<int>(coordinates2by2_[i][9]+offset, coordinates2by2_[i][8]+offset)
 				- win_integral_image.at<int>(coordinates2by2_[i][5]+offset, coordinates2by2_[i][4]+offset));
 
-			dy2by2[i] = sum2by2[i] 
+			dy2by2[i] = sum2by2[i]
 			- 2*(win_integral_image.at<int>(coordinates2by2_[i][1]+offset, coordinates2by2_[i][0]+offset)
 				+ win_integral_image.at<int>(coordinates2by2_[i][11]+offset, coordinates2by2_[i][10]+offset)
 				- win_integral_image.at<int>(coordinates2by2_[i][3]+offset, coordinates2by2_[i][2]+offset)
@@ -346,13 +346,13 @@ static void computeLdbDescriptor(const cv::KeyPoint& kpt, const cv::Mat& img, co
 				- win_integral_image.at<int>(coordinates3by3_[i][3]+offset, coordinates3by3_[i][2]+offset)
 				- win_integral_image.at<int>(coordinates3by3_[i][5]+offset, coordinates3by3_[i][4]+offset);
 
-			dx3by3[i] = sum3by3[i] 
+			dx3by3[i] = sum3by3[i]
 			- 2*(win_integral_image.at<int>(coordinates3by3_[i][1]+offset, coordinates3by3_[i][0]+offset)
 				+ win_integral_image.at<int>(coordinates3by3_[i][13]+offset, coordinates3by3_[i][12]+offset)
 				- win_integral_image.at<int>(coordinates3by3_[i][9]+offset, coordinates3by3_[i][8]+offset)
 				- win_integral_image.at<int>(coordinates3by3_[i][5]+offset, coordinates3by3_[i][4]+offset));
 
-			dy3by3[i] = sum3by3[i] 
+			dy3by3[i] = sum3by3[i]
 			- 2*(win_integral_image.at<int>(coordinates3by3_[i][1]+offset, coordinates3by3_[i][0]+offset)
 				+ win_integral_image.at<int>(coordinates3by3_[i][11]+offset, coordinates3by3_[i][10]+offset)
 				- win_integral_image.at<int>(coordinates3by3_[i][3]+offset, coordinates3by3_[i][2]+offset)
@@ -382,13 +382,13 @@ static void computeLdbDescriptor(const cv::KeyPoint& kpt, const cv::Mat& img, co
 				- win_integral_image.at<int>(coordinates4by4_[i][3]+offset, coordinates4by4_[i][2]+offset)
 				- win_integral_image.at<int>(coordinates4by4_[i][5]+offset, coordinates4by4_[i][4]+offset);
 
-			dx4by4[i] = sum4by4[i] 
+			dx4by4[i] = sum4by4[i]
 			- 2*(win_integral_image.at<int>(coordinates4by4_[i][1]+offset, coordinates4by4_[i][0]+offset)
 				+ win_integral_image.at<int>(coordinates4by4_[i][13]+offset, coordinates4by4_[i][12]+offset)
 				- win_integral_image.at<int>(coordinates4by4_[i][9]+offset, coordinates4by4_[i][8]+offset)
 				- win_integral_image.at<int>(coordinates4by4_[i][5]+offset, coordinates4by4_[i][4]+offset));
 
-			dy4by4[i] = sum4by4[i] 
+			dy4by4[i] = sum4by4[i]
 			- 2*(win_integral_image.at<int>(coordinates4by4_[i][1]+offset, coordinates4by4_[i][0]+offset)
 				+ win_integral_image.at<int>(coordinates4by4_[i][11]+offset, coordinates4by4_[i][10]+offset)
 				- win_integral_image.at<int>(coordinates4by4_[i][3]+offset, coordinates4by4_[i][2]+offset)
@@ -418,13 +418,13 @@ static void computeLdbDescriptor(const cv::KeyPoint& kpt, const cv::Mat& img, co
 				- win_integral_image.at<int>(coordinates5by5_[i][3]+offset, coordinates5by5_[i][2]+offset)
 				- win_integral_image.at<int>(coordinates5by5_[i][5]+offset, coordinates5by5_[i][4]+offset);
 
-			dx5by5[i] = sum5by5[i] 
+			dx5by5[i] = sum5by5[i]
 			- 2*(win_integral_image.at<int>(coordinates5by5_[i][1]+offset, coordinates5by5_[i][0]+offset)
 				+ win_integral_image.at<int>(coordinates5by5_[i][13]+offset, coordinates5by5_[i][12]+offset)
 				- win_integral_image.at<int>(coordinates5by5_[i][9]+offset, coordinates5by5_[i][8]+offset)
 				- win_integral_image.at<int>(coordinates5by5_[i][5]+offset, coordinates5by5_[i][4]+offset));
 
-			dy5by5[i] = sum5by5[i] 
+			dy5by5[i] = sum5by5[i]
 			- 2*(win_integral_image.at<int>(coordinates5by5_[i][1]+offset, coordinates5by5_[i][0]+offset)
 				+ win_integral_image.at<int>(coordinates5by5_[i][11]+offset, coordinates5by5_[i][10]+offset)
 				- win_integral_image.at<int>(coordinates5by5_[i][3]+offset, coordinates5by5_[i][2]+offset)
@@ -462,7 +462,7 @@ static void computeLdbDescriptor(const cv::KeyPoint& kpt, const cv::Mat& img, co
 				desc_bitstring[pt] = (dy1 > dy2) ? score[idx] : 0;
 				pt++;
 			}
-			entire_pt++;	
+			entire_pt++;
 		}
 	}
 	for(int i = 0; i < sum3by3_size; i++){
@@ -490,7 +490,7 @@ static void computeLdbDescriptor(const cv::KeyPoint& kpt, const cv::Mat& img, co
 				desc_bitstring[pt] = (dy1 > dy2) ? score[idx] : 0;
 				pt++;
 			}
-			entire_pt++;	
+			entire_pt++;
 		}
 	}
 	for(int i = 0; i < sum4by4_size; i++){
@@ -696,7 +696,7 @@ void LDB::compute( const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints,
 
 	// Remove keypoints very close to the border
 	//KeyPointsFilter::runByImageBorder(_keypoints, image.size(), edgeThreshold);
-	
+
 	// Cluster the input keypoints depending on the level they were computed at
 	allKeypoints.resize(levelsNum);
     for (std::vector<cv::KeyPoint>::iterator keypoint = _keypoints.begin(),
@@ -773,6 +773,6 @@ void LDB::compute( const cv::Mat& _image, std::vector<cv::KeyPoint>& _keypoints,
 		// And add the keypoints to the output
 		_keypoints.insert(_keypoints.end(), keypoints.begin(), keypoints.end());
 	}
-	
+
 }
 
