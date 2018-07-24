@@ -57,9 +57,9 @@ add_library(keypoint_description_htmap
     src/imgdesc/ldb.cpp)
 target_link_libraries(keypoint_description_htmap ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
-# # Hamap Library
-# set(HAMAP_SRCS
-#     src/bayes/BayesFilter.cpp
+# Hamap Library
+set(HTMAP_SRCS
+    src/bayes/BayesFilter.cpp
 #     src/lc/LoopCloser.cpp
 #     src/map/HighLevelMap.cpp
 #     src/map/Location.cpp
@@ -67,9 +67,9 @@ target_link_libraries(keypoint_description_htmap ${catkin_LIBRARIES} ${OpenCV_LI
 #     src/util/Statistics.cpp
 #     src/util/Util.cpp
 #     src/Hamap.cpp
-# )
-# add_library(hamap ${HAMAP_SRCS})
-# target_link_libraries(hamap keypoint_description_hamap ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${Boost_LIBRARIES})
+)
+add_library(htmap ${HTMAP_SRCS})
+target_link_libraries(htmap keypoint_description_htmap ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${Boost_LIBRARIES})
 
 # # Hamap Node
 # add_executable(hamap_node src/nodes/Hamap_node.cpp)

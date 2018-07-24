@@ -1,15 +1,34 @@
+/*
+* This file is part of htmap.
+*
+* Copyright (C) 2018 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
+*
+* htmap is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* htmap is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with htmap. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef _PARAMS_H
 #define _PARAMS_H
 
 #include <ros/ros.h>
 
-#include "hamap/imgdesc/GlobalDescriptor.h"
-#include "hamap/imgdesc/KeypointDescriptor.h"
-#include "hamap/imgdesc/KeypointDetector.h"
-#include "hamap/util/Statistics.h"
-#include "hamap/util/Util.h"
+#include "htmap/imgdesc/GlobalDescriptor.h"
+#include "htmap/imgdesc/KeypointDescriptor.h"
+#include "htmap/imgdesc/KeypointDetector.h"
+#include "htmap/util/Statistics.h"
+#include "htmap/util/Util.h"
 
-namespace hamap
+namespace htmap
 {
 
 class Params
@@ -29,7 +48,7 @@ class Params
         int imageLC_disc_recent;
         double imageLC_tloop;
         int loc_max_images;
-        int max_total_kps;        
+        int max_total_kps;
         double max_sim_newnode;
 
         // Batch parameters

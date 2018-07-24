@@ -1,3 +1,22 @@
+/*
+* This file is part of htmap.
+*
+* Copyright (C) 2018 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
+*
+* htmap is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* htmap is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with htmap. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef _BAYESFILTER_H_
 #define _BAYESFILTER_H_
 
@@ -8,10 +27,10 @@
 #include <numeric>
 #include <vector>
 
-#include "hamap/util/Params.h"
-#include "hamap/util/Statistics.h"
+#include "htmap/util/Params.h"
+#include "htmap/util/Statistics.h"
 
-namespace hamap
+namespace htmap
 {
 
 enum BayesTransitionModel
@@ -54,7 +73,6 @@ public:
 
     void addElement(const int elem_id);
     std::vector<int>* getElements();
-//    void predict(const unsigned curr_img, std::vector<double>& prior);
     void predict(const unsigned curr_img, std::vector<double>* prior);
     void update(const unsigned curr_img, const std::map<int, double>& lk, std::vector<double>* prior);
     void getMostProbablyElements(std::vector<BayesFilterResult>& elems);

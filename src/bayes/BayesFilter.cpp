@@ -1,6 +1,25 @@
-#include "hamap/bayes/BayesFilter.h"
+/*
+* This file is part of htmap.
+*
+* Copyright (C) 2018 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
+*
+* htmap is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* htmap is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with htmap. If not, see <http://www.gnu.org/licenses/>.
+*/
 
-namespace hamap
+#include "htmap/bayes/BayesFilter.h"
+
+namespace htmap
 {
 
 BayesFilter::BayesFilter(const BayesFilterParams params) :
@@ -40,188 +59,10 @@ std::vector<int>* BayesFilter::getElements()
     return _elements;
 }
 
-/*void BayesFilter::predict(const unsigned curr_img, std::vector<double>& prior)
-{
-    if (_trans_model == BAYES_TRANS_GAUSS && _total_elements > 4)
-    {
-        prior.clear();
-        prior.resize(_total_elements, 0.0);
-
-        prior[0] += _probability[0] * 0.33;
-        prior[1] += _probability[0] * 0.33;
-        prior[2] += _probability[0] * 0.33;
-
-        prior[0] += _probability[1] * 0.25;
-        prior[1] += _probability[1] * 0.25;
-        prior[2] += _probability[1] * 0.25;
-        prior[3] += _probability[1] * 0.25;
-
-        for (size_t loc_id = 2; loc_id < _total_elements - 2; loc_id++)
-        {
-            if (_total_elements > 5)
-            {
-                prior[loc_id - 2] += _probability[loc_id] * 0.09;
-                prior[loc_id - 1] += _probability[loc_id] * 0.18;
-                prior[loc_id]     += _probability[loc_id] * 0.36;
-                prior[loc_id + 1] += _probability[loc_id] * 0.18;
-                prior[loc_id + 2] += _probability[loc_id] * 0.09;
-
-                double prob = 0.1 / (_total_elements - 5);
-                // Previous probabilites.
-                for (unsigned i = 0; i < loc_id - 2; i++)
-                {
-                    prior[i] += _probability[loc_id] * prob;
-                }
-                // Post probabilities.
-                for (unsigned i = loc_id + 3; i < _total_elements; i++)
-                {
-                    prior[i] += _probability[loc_id] * prob;
-                }
-            }
-            else
-            {
-                prior[loc_id - 2] += _probability[loc_id] * 0.11;
-                prior[loc_id - 1] += _probability[loc_id] * 0.2;
-                prior[loc_id]     += _probability[loc_id] * 0.38;
-                prior[loc_id + 1] += _probability[loc_id] * 0.2;
-                prior[loc_id + 2] += _probability[loc_id] * 0.11;
-            }
-        }
-
-        prior[_total_elements - 1] += _probability[_total_elements - 2] * 0.25;
-        prior[_total_elements - 2] += _probability[_total_elements - 2] * 0.25;
-        prior[_total_elements - 3] += _probability[_total_elements - 2] * 0.25;
-        prior[_total_elements - 4] += _probability[_total_elements - 2] * 0.25;
-
-        prior[_total_elements - 1] += _probability[_total_elements - 1] * 0.33;
-        prior[_total_elements - 2] += _probability[_total_elements - 1] * 0.33;
-        prior[_total_elements - 3] += _probability[_total_elements - 1] * 0.33;
-    }
-    else
-    {
-        prior.clear();
-        double prob = 1.0 / _total_elements;
-        prior.resize(_total_elements, prob);
-    }
-
-    _st->registerPrior(curr_img, prior);
-}*/
-
-//void BayesFilter::predict(const unsigned curr_img, std::vector<double>& prior)
 void BayesFilter::predict(const unsigned curr_img, std::vector<double>* prior)
 {
     if (_trans_model == BAYES_TRANS_GAUSS && _total_elements > 8)
     {
-//        prior.clear();
-//        prior.resize(_total_elements, 0.0);
-
-/*        prior[0] += _probability[0] * 0.2;
-        prior[1] += _probability[0] * 0.2;
-        prior[2] += _probability[0] * 0.2;
-        prior[3] += _probability[0] * 0.2;
-        prior[4] += _probability[0] * 0.2;
-
-        prior[0] += _probability[1] * 0.165;
-        prior[1] += _probability[1] * 0.165;
-        prior[2] += _probability[1] * 0.165;
-        prior[3] += _probability[1] * 0.165;
-        prior[4] += _probability[1] * 0.165;
-        prior[5] += _probability[1] * 0.165;
-        
-        prior[0] += _probability[2] * 0.143;
-        prior[1] += _probability[2] * 0.143;
-        prior[2] += _probability[2] * 0.143;
-        prior[3] += _probability[2] * 0.143;
-        prior[4] += _probability[2] * 0.143;
-        prior[5] += _probability[2] * 0.143;
-        prior[6] += _probability[2] * 0.143;
-        
-        prior[0] += _probability[3] * 0.125;
-        prior[1] += _probability[3] * 0.125;
-        prior[2] += _probability[3] * 0.125;
-        prior[3] += _probability[3] * 0.125;
-        prior[4] += _probability[3] * 0.125;
-        prior[5] += _probability[3] * 0.125;
-        prior[6] += _probability[3] * 0.125;
-        prior[7] += _probability[3] * 0.125;
-
-        for (size_t loc_id = 4; loc_id < _total_elements - 4; loc_id++)
-        {
-            if (_total_elements > 9)
-            {
-                prior[loc_id - 4] += _probability[loc_id] * 0.01;
-                prior[loc_id - 3] += _probability[loc_id] * 0.01;
-                prior[loc_id - 2] += _probability[loc_id] * 0.06;
-                prior[loc_id - 1] += _probability[loc_id] * 0.19;
-                prior[loc_id]     += _probability[loc_id] * 0.36;
-                prior[loc_id + 1] += _probability[loc_id] * 0.19;
-                prior[loc_id + 2] += _probability[loc_id] * 0.06;
-                prior[loc_id + 3] += _probability[loc_id] * 0.01;
-                prior[loc_id + 4] += _probability[loc_id] * 0.01;
-
-                double prob = 0.1 / (_total_elements - 9);
-                // Previous probabilites.
-                for (unsigned i = 0; i < loc_id - 4; i++)
-                {
-                    prior[i] += _probability[loc_id] * prob;
-                }
-                // Post probabilities.
-                for (unsigned i = loc_id + 5; i < _total_elements; i++)
-                {
-                    prior[i] += _probability[loc_id] * prob;
-                }
-            }
-            else
-            {
-                prior[loc_id - 4] += _probability[loc_id] * 0.02;
-                prior[loc_id - 3] += _probability[loc_id] * 0.02;
-                prior[loc_id - 2] += _probability[loc_id] * 0.07;
-                prior[loc_id - 1] += _probability[loc_id] * 0.2;
-                prior[loc_id]     += _probability[loc_id] * 0.38;
-                prior[loc_id + 1] += _probability[loc_id] * 0.2;
-                prior[loc_id + 2] += _probability[loc_id] * 0.07;
-                prior[loc_id + 3] += _probability[loc_id] * 0.02;
-                prior[loc_id + 4] += _probability[loc_id] * 0.02;
-            }
-        }
-        
-        prior[_total_elements - 1] += _probability[_total_elements - 4] * 0.125;
-        prior[_total_elements - 2] += _probability[_total_elements - 4] * 0.125;
-        prior[_total_elements - 3] += _probability[_total_elements - 4] * 0.125;
-        prior[_total_elements - 4] += _probability[_total_elements - 4] * 0.125;
-        prior[_total_elements - 5] += _probability[_total_elements - 4] * 0.125;
-        prior[_total_elements - 6] += _probability[_total_elements - 4] * 0.125;
-        prior[_total_elements - 7] += _probability[_total_elements - 4] * 0.125;
-        prior[_total_elements - 8] += _probability[_total_elements - 4] * 0.125;
-        
-        prior[_total_elements - 1] += _probability[_total_elements - 3] * 0.143;
-        prior[_total_elements - 2] += _probability[_total_elements - 3] * 0.143;
-        prior[_total_elements - 3] += _probability[_total_elements - 3] * 0.143;
-        prior[_total_elements - 4] += _probability[_total_elements - 3] * 0.143;
-        prior[_total_elements - 5] += _probability[_total_elements - 3] * 0.143;
-        prior[_total_elements - 6] += _probability[_total_elements - 3] * 0.143;
-        prior[_total_elements - 7] += _probability[_total_elements - 3] * 0.143;
-
-        prior[_total_elements - 1] += _probability[_total_elements - 2] * 0.165;
-        prior[_total_elements - 2] += _probability[_total_elements - 2] * 0.165;
-        prior[_total_elements - 3] += _probability[_total_elements - 2] * 0.165;
-        prior[_total_elements - 4] += _probability[_total_elements - 2] * 0.165;
-        prior[_total_elements - 5] += _probability[_total_elements - 2] * 0.165;
-        prior[_total_elements - 6] += _probability[_total_elements - 2] * 0.165;
-
-        prior[_total_elements - 1] += _probability[_total_elements - 1] * 0.2;
-        prior[_total_elements - 2] += _probability[_total_elements - 1] * 0.2;
-        prior[_total_elements - 3] += _probability[_total_elements - 1] * 0.2;
-        prior[_total_elements - 4] += _probability[_total_elements - 1] * 0.2;
-        prior[_total_elements - 5] += _probability[_total_elements - 1] * 0.2;
-    }
-    else
-    {
-        prior.clear();
-        double prob = 1.0 / _total_elements;
-        prior.resize(_total_elements, prob);
-    }*/
-    
         prior->at(0) += _probability[0] * 0.2;
         prior->at(1) += _probability[0] * 0.2;
         prior->at(2) += _probability[0] * 0.2;
@@ -234,7 +75,7 @@ void BayesFilter::predict(const unsigned curr_img, std::vector<double>* prior)
         prior->at(3) += _probability[1] * 0.165;
         prior->at(4) += _probability[1] * 0.165;
         prior->at(5) += _probability[1] * 0.165;
-        
+
         prior->at(0) += _probability[2] * 0.143;
         prior->at(1) += _probability[2] * 0.143;
         prior->at(2) += _probability[2] * 0.143;
@@ -242,7 +83,7 @@ void BayesFilter::predict(const unsigned curr_img, std::vector<double>* prior)
         prior->at(4) += _probability[2] * 0.143;
         prior->at(5) += _probability[2] * 0.143;
         prior->at(6) += _probability[2] * 0.143;
-        
+
         prior->at(0) += _probability[3] * 0.125;
         prior->at(1) += _probability[3] * 0.125;
         prior->at(2) += _probability[3] * 0.125;
@@ -265,18 +106,6 @@ void BayesFilter::predict(const unsigned curr_img, std::vector<double>* prior)
                 prior->at(loc_id + 2) += _probability[loc_id] * 0.06;
                 prior->at(loc_id + 3) += _probability[loc_id] * 0.01;
                 prior->at(loc_id + 4) += _probability[loc_id] * 0.01;
-
-                /*double prob = 0.1 / (_total_elements - 9);
-                // Previous probabilites.
-                for (unsigned i = 0; i < loc_id - 4; i++)
-                {
-                    prior->at(i) += _probability[loc_id] * prob;
-                }
-                // Post probabilities.
-                for (unsigned i = loc_id + 5; i < _total_elements; i++)
-                {
-                    prior->at(i) += _probability[loc_id] * prob;
-                }*/
             }
             else
             {
@@ -291,7 +120,7 @@ void BayesFilter::predict(const unsigned curr_img, std::vector<double>* prior)
                 prior->at(loc_id + 4) += _probability[loc_id] * 0.02;
             }
         }
-        
+
         prior->at(_total_elements - 1) += _probability[_total_elements - 4] * 0.125;
         prior->at(_total_elements - 2) += _probability[_total_elements - 4] * 0.125;
         prior->at(_total_elements - 3) += _probability[_total_elements - 4] * 0.125;
@@ -300,7 +129,7 @@ void BayesFilter::predict(const unsigned curr_img, std::vector<double>* prior)
         prior->at(_total_elements - 6) += _probability[_total_elements - 4] * 0.125;
         prior->at(_total_elements - 7) += _probability[_total_elements - 4] * 0.125;
         prior->at(_total_elements - 8) += _probability[_total_elements - 4] * 0.125;
-        
+
         prior->at(_total_elements - 1) += _probability[_total_elements - 3] * 0.143;
         prior->at(_total_elements - 2) += _probability[_total_elements - 3] * 0.143;
         prior->at(_total_elements - 3) += _probability[_total_elements - 3] * 0.143;
@@ -331,7 +160,8 @@ void BayesFilter::predict(const unsigned curr_img, std::vector<double>* prior)
 		}
     }
 
-//    _st->registerPrior(curr_img, prior);
+    // Uncomment this line if you want to save the full Bayes filter info
+    //    _st->registerPrior(curr_img, prior);
 }
 
 void BayesFilter::update(const unsigned curr_img, const std::map<int, double>& lk, std::vector<double>* prior)
@@ -370,10 +200,11 @@ void BayesFilter::update(const unsigned curr_img, const std::map<int, double>& l
         if (score > limit)
         {
             likelihood[index] = (score - stdev) / mean;
-        }        
+        }
     }
 
-    _st->registerLikelihood(curr_img, likelihood);
+    // Uncomment this line if you want to save the full Bayes filter info
+    // _st->registerLikelihood(curr_img, likelihood);
 
     sum = 0.0;
     for (unsigned image_id = 0; image_id < _total_elements; image_id++)
@@ -390,7 +221,8 @@ void BayesFilter::update(const unsigned curr_img, const std::map<int, double>& l
         _probability[image_id] /= sum;
     }
 
-    _st->registerPosterior(curr_img, _probability);
+    // Uncomment this line if you want to save the full Bayes filter info
+    // _st->registerPosterior(curr_img, _probability);
 }
 
 void BayesFilter::getMostProbablyElements(std::vector<BayesFilterResult>& elems)

@@ -1,6 +1,25 @@
-#include "hamap/util/Params.h"
+/*
+* This file is part of htmap.
+*
+* Copyright (C) 2018 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
+*
+* htmap is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* htmap is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with htmap. If not, see <http://www.gnu.org/licenses/>.
+*/
 
-namespace hamap
+#include "htmap/util/Params.h"
+
+namespace htmap
 {
 
 Params* Params::_instance = 0;
@@ -30,7 +49,7 @@ void Params::readParams(const ros::NodeHandle& nh)
     ROS_INFO("[Params] Working directory: %s", dir_results.c_str());
 
     // Configuring the statistics directory.
-    Statistics* st = Statistics::getInstance();
+    Statistics* st = htmap::Statistics::getInstance();
     st->init(nimages);
 
     std::string match_method_st;
@@ -46,7 +65,7 @@ void Params::readParams(const ros::NodeHandle& nh)
 
     nh.param<std::string>("detector", detector_name, "FAST");
     ROS_INFO("[Params] Keypoint Detector: %s", detector_name.c_str());
-    detector = hamap::KeypointDetector::create(detector_name, det_params);
+    detector = KeypointDetector::create(detector_name, det_params);
 
     bool grid;
     int grid_rows, grid_cols;
@@ -57,12 +76,12 @@ void Params::readParams(const ros::NodeHandle& nh)
     ROS_INFO("[Params] Grid: %i (%i, %i), Total Features: %i", grid ? 1 : 0, grid_rows, grid_cols, max_total_kps);
     if (grid)
     {
-        detector->_detector = hamap::convertToGridDetector(grid_rows, grid_cols, max_total_kps, detector->_detector);
+        detector->_detector = htmap::convertToGridDetector(grid_rows, grid_cols, max_total_kps, detector->_detector);
     }
 
     nh.param<std::string>("descriptor", descriptor_name, "BRIEF");
     ROS_INFO("[Params] Keypoint Descriptor: %s", descriptor_name.c_str());
-    descriptor = hamap::KeypointDescriptor::create(descriptor_name, des_params);
+    descriptor = KeypointDescriptor::create(descriptor_name, des_params);
 
     nh.param<std::string>("gdescriptor", gdescriptor_name, "WI-SIFT");
     ROS_INFO("[Params] Global Descriptor: %s", gdescriptor_name.c_str());

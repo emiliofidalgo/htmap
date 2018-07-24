@@ -1,6 +1,26 @@
-#include "hamap/util/Statistics.h"
+/*
+* This file is part of htmap.
+*
+* Copyright (C) 2018 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
+*
+* htmap is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* htmap is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with htmap. If not, see <http://www.gnu.org/licenses/>.
+*/
 
-namespace hamap
+
+#include "htmap/util/Statistics.h"
+
+namespace htmap
 {
 
 Statistics* Statistics::_instance = 0;
@@ -15,7 +35,7 @@ Statistics* Statistics::getInstance()
 }
 
 void Statistics::init(const int nimages)
-{    
+{
     loops = cv::Mat::zeros(nimages, nimages, CV_32S);
     prior = cv::Mat::zeros(nimages, nimages, CV_64F);
     likelihood = cv::Mat::zeros(nimages, nimages, CV_64F);
@@ -76,11 +96,11 @@ void Statistics::registerLCTimes(std::vector<double>& values)
 
 void Statistics::writeResults(const std::string& dir, int inliers)
 {
-    std::string loops_results_filename = dir + "hamap_loops_" + SSTR(inliers) + ".txt";
-    std::string prior_results_filename = dir + "hamap_prior_" + SSTR(inliers) + ".txt";
-    std::string likelihood_results_filename = dir + "hamap_likelihood_" + SSTR(inliers) + ".txt";
-    std::string posterior_results_filename = dir + "hamap_posterior_" + SSTR(inliers) + ".txt";
-    std::string img2loc_results_filename = dir + "hamap_img2loc_" + SSTR(inliers) + ".txt";
+    std::string loops_results_filename = dir + "htmap_loops_" + SSTR(inliers) + ".txt";
+    std::string prior_results_filename = dir + "htmap_prior_" + SSTR(inliers) + ".txt";
+    std::string likelihood_results_filename = dir + "htmap_likelihood_" + SSTR(inliers) + ".txt";
+    std::string posterior_results_filename = dir + "htmap_posterior_" + SSTR(inliers) + ".txt";
+    std::string img2loc_results_filename = dir + "htmap_img2loc_" + SSTR(inliers) + ".txt";
 
     std::ofstream loops_file, prior_file, lik_file, post_file, im2loc_file;
 
@@ -95,26 +115,30 @@ void Statistics::writeResults(const std::string& dir, int inliers)
         for (int j = 0; j < loops.cols; j++)
         {
             loops_file << loops(i, j) << "\t";
+            // Uncomment these lines if you want to save the full Bayes filter info
+
             //prior_file << prior(i, j) << "\t";
             //lik_file << likelihood(i, j) << "\t";
             //post_file << posterior(i, j) << "\t";
-		}        
+		}
         im2loc_file << i << "\t" << locations[i] << std::endl;
 
 		loops_file << std::endl;
+        // Uncomment these lines if you want to save the full Bayes filter info
+
         //prior_file << std::endl;
         //lik_file << std::endl;
         //post_file << std::endl;
     }
 
-	loops_file.close();	
+	loops_file.close();
     prior_file.close();
     lik_file.close();
     post_file.close();
     im2loc_file.close();
 
     // Description times
-    std::string dtimes_results_filename = dir + "hamap_dtimes_" + SSTR(inliers) + ".txt";
+    std::string dtimes_results_filename = dir + "htmap_dtimes_" + SSTR(inliers) + ".txt";
     std::ofstream dtimes_file;
     dtimes_file.open(dtimes_results_filename.c_str(), std::ios::out | std::ios::trunc);
     for (unsigned i = 0; i < desc_times.size(); i++)
@@ -129,8 +153,8 @@ void Statistics::writeResults(const std::string& dir, int inliers)
 
     dtimes_file.close();
 
-    // Description times
-    std::string lc_results_filename = dir + "hamap_lc_" + SSTR(inliers) + ".txt";
+    // LC times
+    std::string lc_results_filename = dir + "htmap_lc_" + SSTR(inliers) + ".txt";
     std::ofstream lc_file;
     lc_file.open(lc_results_filename.c_str(), std::ios::out | std::ios::trunc);
     for (unsigned i = 0; i < lc_times.size(); i++)
