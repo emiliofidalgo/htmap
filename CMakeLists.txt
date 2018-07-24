@@ -49,27 +49,28 @@ include_directories(
     ${Boost_INCLUDE_DIRS})
 
 # Description Library
-add_library(keypoint_description_htmap
+add_library(description_htmap
     src/imgdesc/GridAdaptedFeatureDetector.cpp
     src/imgdesc/KeypointDetector.cpp
     src/imgdesc/KeypointDescriptor.cpp
     src/imgdesc/GlobalDescriptor.cpp
     src/imgdesc/ldb.cpp)
-target_link_libraries(keypoint_description_htmap ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+target_link_libraries(description_htmap ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
 # Hamap Library
 set(HTMAP_SRCS
     src/bayes/BayesFilter.cpp
+    src/util/Params.cpp
+    src/util/Statistics.cpp
+    src/util/Util.cpp
 #     src/lc/LoopCloser.cpp
 #     src/map/HighLevelMap.cpp
 #     src/map/Location.cpp
-#     src/util/Params.cpp
-#     src/util/Statistics.cpp
-#     src/util/Util.cpp
+
 #     src/Hamap.cpp
 )
 add_library(htmap ${HTMAP_SRCS})
-target_link_libraries(htmap keypoint_description_htmap ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(htmap description_htmap ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${Boost_LIBRARIES})
 
 # # Hamap Node
 # add_executable(hamap_node src/nodes/Hamap_node.cpp)
