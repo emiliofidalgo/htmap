@@ -2,8 +2,9 @@
 
 <launch>
     <!-- Arguments -->
-    <arg name="images_dir" default="/datasets/CityCentre/images" />
-    <arg name="working_dir" default="/home/emilio/Escritorio/Serialization/Hamap/" />
+    <arg name="images_dir" default="/datasets/CityCentre/images/" />
+    <arg name="working_dir" default="/home/emilio/Escritorio/Serialization/HTMap/" />
+
     <arg name="detector" default="FAST" />
     <arg name="grid" default="true" />
     <arg name="grid_rows" default="4" />
@@ -11,7 +12,7 @@
     <arg name="max_total_kps" default="1000" />
     <arg name="descriptor" default="LDB" />
     <arg name="gdescriptor" default="PHOG" />
-    <arg name="load_feats" default="false" />    
+    <arg name="load_feats" default="false" />
     <arg name="match_method" default="ratio" />
     <arg name="match_ratio" default="0.8" />
     <arg name="locLC_thresh" default="0.65" />
@@ -25,10 +26,10 @@
     <arg name="inliers_end" default="200" />
     <arg name="inliers_step" default="15" />
 
-    <!-- Mosaic Builder node -->
-    <node pkg="hamap" type="hamap_node" name="Hamap" output="screen">
+    <!-- HTMap node -->
+    <node pkg="htmap" type="htmap_node" name="HTMap" output="screen">
         <param name="images_dir" value="$(arg images_dir)" />
-        <param name="working_dir" value="$(arg working_dir)" />        
+        <param name="working_dir" value="$(arg working_dir)" />
         <param name="detector" value="$(arg detector)" />
         <param name="grid" value="$(arg grid)" />
         <param name="grid_rows" value="$(arg grid_rows)" />
@@ -36,7 +37,7 @@
         <param name="max_total_kps" value="$(arg max_total_kps)" />
         <param name="descriptor" value="$(arg descriptor)" />
         <param name="gdescriptor" value="$(arg gdescriptor)" />
-        <param name="load_feats" value="$(arg load_feats)" />        
+        <param name="load_feats" value="$(arg load_feats)" />
         <param name="match_method" value="$(arg match_method)" />
         <param name="match_ratio" value="$(arg match_ratio)" />
         <param name="locLC_thresh" value="$(arg locLC_thresh)" />
