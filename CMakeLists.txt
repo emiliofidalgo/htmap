@@ -71,6 +71,6 @@ set(HTMAP_SRCS
 add_library(htmap ${HTMAP_SRCS})
 target_link_libraries(htmap description_htmap ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${Boost_LIBRARIES})
 
-# # Hamap Node
-# add_executable(hamap_node src/nodes/Hamap_node.cpp)
-# target_link_libraries(hamap_node hamap)
+# HTMap Node
+add_executable(htmap_node src/nodes/HTMap_node.cpp)
+target_link_libraries(htmap_node htmap)
