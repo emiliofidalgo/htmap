@@ -57,7 +57,7 @@ add_library(description_htmap
     src/imgdesc/ldb.cpp)
 target_link_libraries(description_htmap ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
-# Hamap Library
+# HTMap Library
 set(HTMAP_SRCS
     src/bayes/BayesFilter.cpp
     src/util/Params.cpp
@@ -65,8 +65,8 @@ set(HTMAP_SRCS
     src/util/Util.cpp
     src/map/Location.cpp
     src/map/HighLevelMap.cpp
-#     src/lc/LoopCloser.cpp
-#     src/Hamap.cpp
+    src/lc/LoopCloser.cpp
+    src/HTMap.cpp
 )
 add_library(htmap ${HTMAP_SRCS})
 target_link_libraries(htmap description_htmap ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${Boost_LIBRARIES})

@@ -1,9 +1,28 @@
-#include "hamap/Hamap.h"
+/*
+* This file is part of htmap.
+*
+* Copyright (C) 2018 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
+*
+* htmap is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* htmap is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with htmap. If not, see <http://www.gnu.org/licenses/>.
+*/
 
-namespace hamap
+#include "htmap/HTMap.h"
+
+namespace htmap
 {
 
-Hamap::Hamap(const ros::NodeHandle nh)
+HTMap::HTMap(const ros::NodeHandle nh)
     : _nh(nh),
       _params(0),
       _st(0)
@@ -27,11 +46,11 @@ Hamap::Hamap(const ros::NodeHandle nh)
     }
 }
 
-Hamap::~Hamap()
+HTMap::~HTMap()
 {
 }
 
-void Hamap::process()
+void HTMap::process()
 {
     ROS_INFO("Mapping ...");
 
@@ -62,7 +81,7 @@ void Hamap::process()
     ROS_INFO("Process finished");
 }
 
-void Hamap::processBatch()
+void HTMap::processBatch()
 {
     ROS_INFO("Mapping ...");
 
@@ -92,7 +111,7 @@ void Hamap::processBatch()
     // ---- END Results ----
 }
 
-void Hamap::describeImages(std::vector<std::string>& images)
+void HTMap::describeImages(std::vector<std::string>& images)
 {
     if (_params->load_features)
     {
@@ -159,7 +178,7 @@ void Hamap::describeImages(std::vector<std::string>& images)
     }
 }
 
-void Hamap::map(const std::vector<std::string>& images, HighLevelMap& map, LoopCloser& _lc)
+void HTMap::map(const std::vector<std::string>& images, HighLevelMap& map, LoopCloser& _lc)
 {
     // Initializing the first location.
     ROS_INFO("Adding first image to location 0.");
@@ -178,33 +197,10 @@ void Hamap::map(const std::vector<std::string>& images, HighLevelMap& map, LoopC
     map.addImageToLocation(0, 0, images[0]);
     _st->registerImageToLocation(0, 0);
 
-	int di_25 = static_cast<int>(_params->nimages / 4.0);
-	int di_50 = static_cast<int>(_params->nimages / 2.0);
-	int di_75 = static_cast<int>((_params->nimages / 4.0) * 3.0);
-
     // Processing the remaining images.
     for (unsigned img_idx = 1; img_idx < _params->nimages; img_idx++)
     {
         ROS_INFO("Processing image %u", img_idx);
-
-		if (img_idx == di_25)
-		{
-			ROS_INFO("Storing descriptor information at 25");
-			std::string f = "/home/emilio/Escritorio/Serialization/Hamap/descinfo_25/";
-			saveDescriptorInfo(f, map);
-		}
-		else if (img_idx == di_50)
-		{
-			ROS_INFO("Storing descriptor information at 50");
-			std::string f = "/home/emilio/Escritorio/Serialization/Hamap/descinfo_50/";
-			saveDescriptorInfo(f, map);
-		}
-		else if (img_idx == di_75)
-		{
-			ROS_INFO("Storing descriptor information at 75");
-			std::string f = "/home/emilio/Escritorio/Serialization/Hamap/descinfo_75/";
-			saveDescriptorInfo(f, map);
-		}
 
         // Load the current image.
         Image img;
@@ -249,19 +245,9 @@ void Hamap::map(const std::vector<std::string>& images, HighLevelMap& map, LoopC
         map.addImageToLocation(curr_lid, img_idx, images[img_idx]);
         _st->registerImageToLocation(img_idx, curr_lid);
     }
-		
-	ROS_INFO("Storing descriptor information at 100");
-	std::string f = "/home/emilio/Escritorio/Serialization/Hamap/descinfo_100/";
-	saveDescriptorInfo(f, map);
-
-	// Storing the descriptors of each index
-	for (int i = 0; i < map.locations.size(); i++)
-	{
-		map.locations[i]->_bindex->saveDescriptorsInfo(f);
-	}
 }
 
-bool Hamap::isNewLocation(const Image& img, HighLevelMap& map)
+bool HTMap::isNewLocation(const Image& img, HighLevelMap& map)
 {
     // Get the current active location in the map.
     Location* loc = map.getActiveLocation();
@@ -282,16 +268,6 @@ bool Hamap::isNewLocation(const Image& img, HighLevelMap& map)
     {
         return false;
     }
-}
-
-void Hamap::saveDescriptorInfo(const std::string& dir, HighLevelMap& map)
-{
-	// Storing the descriptors of each index
-	for (int i = 0; i < map.locations.size(); i++)
-	{   
-		std::string f = dir + SSTR(i) + ".txt";
-		map.locations[i]->_bindex->saveDescriptorsInfo(f);
-	}
 }
 
 }

@@ -17,40 +17,51 @@
 * along with htmap. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _LOOPCLOSER_H_
-#define _LOOPCLOSER_H_
+#ifndef HTMAP_H
+#define HTMAP_H
 
-#include <queue>
+#include <algorithm>
+
 #include <omp.h>
-
 #include <opencv2/opencv.hpp>
+#include <ros/ros.h>
 
-#include "htmap/bayes/BayesFilter.h"
+#include "htmap/lc/LoopCloser.h"
 #include "htmap/map/HighLevelMap.h"
 #include "htmap/util/Image.h"
+#include "htmap/util/Statistics.h"
 #include "htmap/util/Params.h"
+
+#define SSTR( x ) dynamic_cast< std::ostringstream & >( \
+         ( std::ostringstream() << std::dec << x ) ).str()
 
 namespace htmap
 {
 
-class LoopCloser
+class HTMap
 {
     public:
-        LoopCloser();
-        ~LoopCloser();
+        HTMap(const ros::NodeHandle nh);
+        ~HTMap();
 
-        bool process(const Image& image, HighLevelMap& hmap, unsigned& loop_loc, unsigned& loop_img);
+        void process();
+        void processBatch();
 
-    private:
-        BayesFilter _filter;
+private:
+        // ROS
+        ros::NodeHandle _nh;
+
+        // Parameters
         Params* _params;
-        Statistics* _st;
-        std::queue<int> _buffer;
-		std::vector<double> _prior;
 
-        void computeLikelihood(const Image& image, HighLevelMap& hmap, std::map<int, double>& lik, double& llc_time, double& ilc_time);
+        // Statistics
+        Statistics* _st;
+
+        void describeImages(std::vector<std::string>& images);
+        void map(const std::vector<std::string>& images, HighLevelMap& map, LoopCloser& _lc);
+        bool isNewLocation(const Image& img, HighLevelMap& map);
 };
 
 }
 
-#endif /* _LOOPCLOSER_H_ */
+#endif // HTMAP_H

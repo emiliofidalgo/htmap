@@ -1,6 +1,25 @@
-#include "hamap/lc/LoopCloser.h"
+/*
+* This file is part of htmap.
+*
+* Copyright (C) 2018 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
+*
+* htmap is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* htmap is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with htmap. If not, see <http://www.gnu.org/licenses/>.
+*/
 
-namespace hamap
+#include "htmap/lc/LoopCloser.h"
+
+namespace htmap
 {
 
 LoopCloser::LoopCloser()
@@ -34,7 +53,7 @@ bool LoopCloser::process(const Image& image, HighLevelMap& hmap, unsigned& loop_
     // Executing the Bayes filter.
     if (_filter.numElems() > 0)
     {
-        // Predict        
+        // Predict
 //        std::vector<double> prior;
         init_time = omp_get_wtime();
         _filter.predict(image.image_id, &_prior);
@@ -141,7 +160,7 @@ void LoopCloser::computeLikelihood(const Image& image, HighLevelMap& hmap, std::
     }
     else
     {
-        loc_dists(0, 0) = 1.0;        
+        loc_dists(0, 0) = 1.0;
     }
 
     double end_time = omp_get_wtime();
@@ -174,7 +193,7 @@ void LoopCloser::computeLikelihood(const Image& image, HighLevelMap& hmap, std::
                 loc_imscores[imloc] = image_matches;
             }
 
-            // Establishing the likelihood.            
+            // Establishing the likelihood.
            	lik[image_id] = loc_dists(0, imloc) * loc_imscores[imloc][image_id];
 //			std::cout << "Likelihood for image " << image_id << " Node " << imloc << ": "  << loc_dists(0, imloc) << " * " <<  loc_imscores[imloc][image_id] << ": " << lik[image_id] << std::endl;
         }
