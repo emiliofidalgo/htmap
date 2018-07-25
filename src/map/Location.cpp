@@ -1,6 +1,25 @@
-#include "hamap/map/Location.h"
+/*
+* This file is part of htmap.
+*
+* Copyright (C) 2018 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
+*
+* htmap is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* htmap is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with htmap. If not, see <http://www.gnu.org/licenses/>.
+*/
 
-namespace hamap
+#include "htmap/map/Location.h"
+
+namespace htmap
 {
 
 Location::Location(const int& max_images, const int& feat_per_img, const int& desc_bytes) :
@@ -32,7 +51,7 @@ void Location::addImage(const int& id, const std::string& image_filename)
     {
 	    Image curr_img;
 	    curr_img.load(image_filename);
-	        
+
 		LocationEntry locent(id, image_filename);
 	    images.push_back(locent);
 
@@ -58,10 +77,10 @@ void Location::addImage(const int& id, const std::string& image_filename)
     	        {
         	        matches.push_back(matches_feats[m][0]);
 	            }
-    	    }        
+    	    }
 
         	// Updating the index
-	        _bindex->update(int(images.size() - 1), curr_img.kps, curr_img.dscs, matches);        
+	        _bindex->update(int(images.size() - 1), curr_img.kps, curr_img.dscs, matches);
 		}
 		else
 		{
@@ -77,7 +96,7 @@ void Location::addImage(const int& id, const std::string& image_filename)
     	        {
         	        matches.push_back(matches_feats[m][0]);
 	            }
-    	    }        
+    	    }
 
 			_bindex->addToInvertedIndex(int(images.size() - 1), curr_img.kps, matches);
 		}
@@ -110,7 +129,7 @@ void Location::searchImages(const cv::Mat& dscs, std::map<int, double>& image_ma
     {
         // Translating the index to the real image identifier.
         imm[i].image_id = images[imm[i].image_id].image_id;
-        
+
 		#pragma omp critical(IMMATCH)
         {
             image_matches[imm[i].image_id] = imm[i].score;
@@ -122,13 +141,13 @@ void Location::initializeLocation(const int& id, const std::string& image_filena
 {
     LocationEntry locent(id, image_filename);
 
-    images.push_back(locent);    
+    images.push_back(locent);
 
     // Loading the image.
     Image img;
     img.load(image_filename);
 
-    // Coyping the descriptor    
+    // Coyping the descriptor
     img.gdsc.copyTo(gdescriptors);
     int dsize = _params->gdescriptor->getDescSize();
     desc = cv::Mat::zeros(1, dsize, CV_64F);

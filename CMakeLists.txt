@@ -63,10 +63,9 @@ set(HTMAP_SRCS
     src/util/Params.cpp
     src/util/Statistics.cpp
     src/util/Util.cpp
+    src/map/Location.cpp
+    src/map/HighLevelMap.cpp
 #     src/lc/LoopCloser.cpp
-#     src/map/HighLevelMap.cpp
-#     src/map/Location.cpp
-
 #     src/Hamap.cpp
 )
 add_library(htmap ${HTMAP_SRCS})
