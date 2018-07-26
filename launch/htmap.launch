@@ -6,7 +6,7 @@
     <arg name="working_dir" default="/home/emilio/Escritorio/Serialization/HTMap/" />
 
     <arg name="detector" default="FAST" />
-    <arg name="grid" default="true" />
+    <arg name="grid" default="false" />
     <arg name="grid_rows" default="4" />
     <arg name="grid_cols" default="4" />
     <arg name="max_total_kps" default="1000" />
@@ -44,6 +44,7 @@
         <param name="imageLC_min_inliers" value="$(arg imageLC_min_inliers)" />
         <param name="imageLC_disc_recent" value="$(arg imageLC_disc_recent)" />
         <param name="imageLC_tloop" value="$(arg imageLC_tloop)" />
+        <param name="loc_max_images" value="$(arg loc_max_images)" />
         <param name="max_sim_newnode" value="$(arg max_sim_newnode)" />
         <param name="batch" value="$(arg batch)" />
         <param name="inliers_begin" value="$(arg inliers_begin)" />
