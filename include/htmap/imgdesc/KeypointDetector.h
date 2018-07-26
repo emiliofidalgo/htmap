@@ -35,7 +35,8 @@ enum KeypointDetectorType
 	DETECTOR_BRISK,
 	DETECTOR_SIFT,
 	DETECTOR_SURF,
-	DETECTOR_STAR
+	DETECTOR_STAR,
+	DETECTOR_GRID
 };
 
 // ---
@@ -341,7 +342,43 @@ class StarKeypointDetector : public KeypointDetector
 	int _suppressnonmaxsize;
 };
 
-cv::Feature2D* convertToGridDetector(const int grid_rows, const int grid_cols, const int max_feats, cv::Ptr<cv::Feature2D>& det);
+// ---
+// Grid detector class.
+// ---
+class GridKeypointDetector : public KeypointDetector
+{
+	public:
+		GridKeypointDetector(const cv::Ptr<cv::Feature2D>& detector,
+												 const int grid_rows,
+												 const int grid_cols,
+												 const int max_feats) :
+			KeypointDetector(DETECTOR_GRID)
+		{
+			_detector = detector;
+			_grid = new GridAdaptedFeatureDetector(_detector,
+																						max_feats,
+																						grid_rows,
+																						grid_cols);
+  	}
+
+  	~GridKeypointDetector()
+  	{
+  		delete _grid;
+  	}
+
+		void parseParameters(const KeypointDetectorParams& params)
+		{
+  	}
+
+		void detect(const cv::Mat& image, std::vector<cv::KeyPoint>& kps);
+
+		GridAdaptedFeatureDetector* _grid;
+};
+
+KeypointDetector* convertToGridDetector(const int grid_rows,
+																				const int grid_cols,
+																				const int max_feats,
+																				KeypointDetector* det);
 
 }
 

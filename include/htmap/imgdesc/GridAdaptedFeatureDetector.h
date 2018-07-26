@@ -70,9 +70,10 @@ public:
     virtual bool empty() const;
     cv::Algorithm* info() const;
 
-protected:
-    virtual void detectImpl( const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, const cv::Mat& mask=cv::Mat() ) const;
 
+    void detect( const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, const cv::Mat& mask=cv::Mat() ) const;
+
+protected:
     cv::Ptr<cv::Feature2D> detector;
     int maxTotalKeypoints;
     int gridRows;

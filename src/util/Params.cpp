@@ -76,7 +76,7 @@ void Params::readParams(const ros::NodeHandle& nh)
     ROS_INFO("[Params] Grid: %i (%i, %i), Total Features: %i", grid ? 1 : 0, grid_rows, grid_cols, max_total_kps);
     if (grid)
     {
-        detector->_detector = htmap::convertToGridDetector(grid_rows, grid_cols, max_total_kps, detector->_detector);
+        detector = htmap::convertToGridDetector(grid_rows, grid_cols, max_total_kps, detector);
     }
 
     nh.param<std::string>("descriptor", descriptor_name, "BRIEF");

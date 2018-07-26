@@ -139,7 +139,7 @@ public:
 };
 } // namepace
 
-void GridAdaptedFeatureDetector::detectImpl( const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, const cv::Mat& mask ) const
+void GridAdaptedFeatureDetector::detect( const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints, const cv::Mat& mask ) const
 {
     if (image.empty() || maxTotalKeypoints < gridRows * gridCols)
     {
