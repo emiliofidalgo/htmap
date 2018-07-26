@@ -52,6 +52,13 @@ HTMap::~HTMap()
 
 void HTMap::process()
 {
+    // Preparing the resulting directory
+    ROS_INFO("Preparing results directory ...");
+    boost::filesystem::path res_dir = _params->dir_results + "results/";
+    boost::filesystem::remove_all(res_dir);
+    boost::filesystem::create_directory(res_dir);
+    ROS_INFO("Results directory ready");
+
     ROS_INFO("Mapping ...");
 
     // Variables to control the mapping time
@@ -73,7 +80,7 @@ void HTMap::process()
 
     // STEP 3 ---- Writing results ----
     ROS_INFO("--- Writing results ---");
-    _st->writeResults(_params->dir_results, _params->imageLC_min_inliers);
+    _st->writeResults(_params->dir_results + "results/", _params->imageLC_min_inliers);
     // ---- END Results ----
 
     end_time = omp_get_wtime();
@@ -83,6 +90,13 @@ void HTMap::process()
 
 void HTMap::processBatch()
 {
+    // Preparing the resulting directory
+    ROS_INFO("Preparing results directory ...");
+    boost::filesystem::path res_dir = _params->dir_results + "results/";
+    boost::filesystem::remove_all(res_dir);
+    boost::filesystem::create_directory(res_dir);
+    ROS_INFO("Results directory ready");
+
     ROS_INFO("Mapping ...");
 
     // STEP 1 ---- Image Description ----
@@ -106,7 +120,7 @@ void HTMap::processBatch()
 
         // STEP 3 ---- Writing results ----
         ROS_INFO("--- Writing results ---");
-        _st->writeResults(_params->dir_results, _params->imageLC_min_inliers);
+        _st->writeResults(_params->dir_results + "results/", _params->imageLC_min_inliers);
     }
     // ---- END Results ----
 
