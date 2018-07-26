@@ -109,6 +109,8 @@ void HTMap::processBatch()
         _st->writeResults(_params->dir_results, _params->imageLC_min_inliers);
     }
     // ---- END Results ----
+
+    ROS_INFO("Process finished");
 }
 
 void HTMap::describeImages(std::vector<std::string>& images)
