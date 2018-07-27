@@ -68,7 +68,7 @@ void Params::readParams(const ros::NodeHandle& nh)
     detector = KeypointDetector::create(detector_name, det_params);
 
     nh.param("max_total_kps", max_total_kps, 1000);
-    ROS_INFO("Total Features: %i", max_total_kps);
+    ROS_INFO("[Params] Total Features: %i", max_total_kps);
 
     nh.param<std::string>("descriptor", descriptor_name, "BRIEF");
     ROS_INFO("[Params] Keypoint Descriptor: %s", descriptor_name.c_str());
