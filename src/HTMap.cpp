@@ -163,10 +163,13 @@ void HTMap::describeImages(std::vector<std::string>& images)
             _params->detector->detect(image, kps);
             double end_time = omp_get_wtime();
             double ftime = end_time - init_time;
+            cv::KeyPointsFilter::retainBest(kps, _params->max_total_kps);
+
             init_time = omp_get_wtime();
             _params->descriptor->describe(image, kps, dsc);
             end_time = omp_get_wtime();
             double ltime = end_time - init_time;
+
             init_time = omp_get_wtime();
             _params->gdescriptor->describe(image, gdsc);
             end_time = omp_get_wtime();
