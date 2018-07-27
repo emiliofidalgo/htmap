@@ -67,17 +67,8 @@ void Params::readParams(const ros::NodeHandle& nh)
     ROS_INFO("[Params] Keypoint Detector: %s", detector_name.c_str());
     detector = KeypointDetector::create(detector_name, det_params);
 
-    bool grid;
-    int grid_rows, grid_cols;
-    nh.param("grid", grid, true);
-    nh.param("grid_rows", grid_rows, 4);
-    nh.param("grid_cols", grid_cols, 4);
-    nh.param("max_total_kps", max_total_kps, 4000);
-    ROS_INFO("[Params] Grid: %i (%i, %i), Total Features: %i", grid ? 1 : 0, grid_rows, grid_cols, max_total_kps);
-    if (grid)
-    {
-        detector = htmap::convertToGridDetector(grid_rows, grid_cols, max_total_kps, detector);
-    }
+    nh.param("max_total_kps", max_total_kps, 1000);
+    ROS_INFO("Total Features: %i", max_total_kps);
 
     nh.param<std::string>("descriptor", descriptor_name, "BRIEF");
     ROS_INFO("[Params] Keypoint Descriptor: %s", descriptor_name.c_str());

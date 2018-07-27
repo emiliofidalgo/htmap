@@ -6,9 +6,6 @@
     <arg name="working_dir" default="/home/emilio/Escritorio/Serialization/HTMap/" />
 
     <arg name="detector" default="FAST" />
-    <arg name="grid" default="false" />
-    <arg name="grid_rows" default="4" />
-    <arg name="grid_cols" default="4" />
     <arg name="max_total_kps" default="1000" />
     <arg name="descriptor" default="LDB" />
     <arg name="gdescriptor" default="PHOG" />
@@ -31,9 +28,6 @@
         <param name="images_dir" value="$(arg images_dir)" />
         <param name="working_dir" value="$(arg working_dir)" />
         <param name="detector" value="$(arg detector)" />
-        <param name="grid" value="$(arg grid)" />
-        <param name="grid_rows" value="$(arg grid_rows)" />
-        <param name="grid_cols" value="$(arg grid_cols)" />
         <param name="max_total_kps" value="$(arg max_total_kps)" />
         <param name="descriptor" value="$(arg descriptor)" />
         <param name="gdescriptor" value="$(arg gdescriptor)" />

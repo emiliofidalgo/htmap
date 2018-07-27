@@ -50,7 +50,6 @@ include_directories(
 
 # Description Library
 add_library(description_htmap
-    src/imgdesc/GridAdaptedFeatureDetector.cpp
     src/imgdesc/KeypointDetector.cpp
     src/imgdesc/KeypointDescriptor.cpp
     src/imgdesc/GlobalDescriptor.cpp

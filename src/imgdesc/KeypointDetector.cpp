@@ -52,11 +52,6 @@ void StarKeypointDetector::detect(const cv::Mat& image, std::vector<cv::KeyPoint
 	_detector->detect(image, kps);
 }
 
-void GridKeypointDetector::detect(const cv::Mat& image, std::vector<cv::KeyPoint>& kps)
-{
-	_grid->detect(image, kps);
-}
-
 KeypointDetector* KeypointDetector::create(const std::string& name, const KeypointDetectorParams& params)
 {
 	KeypointDetector* detector = 0;
@@ -87,17 +82,6 @@ KeypointDetector* KeypointDetector::create(const std::string& name, const Keypoi
 	}
 
 	return detector;
-}
-
-KeypointDetector* convertToGridDetector(const int grid_rows,
-																				const int grid_cols,
-																				const int max_feats,
-																				KeypointDetector* det)
-{
-	return new GridKeypointDetector(det->_detector,
-																	max_feats,
-																	grid_rows,
-																	grid_cols);
 }
 
 }
