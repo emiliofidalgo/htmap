@@ -18,10 +18,10 @@
     <arg name="imageLC_tloop" default="0.8" />
     <arg name="loc_max_images" default="500" />
     <arg name="max_sim_newnode" default="0.20" />
-    <arg name="batch" default="false" />
+    <arg name="batch" default="true" />
     <arg name="inliers_begin" default="20" />
     <arg name="inliers_end" default="200" />
-    <arg name="inliers_step" default="15" />
+    <arg name="inliers_step" default="40" />
 
     <!-- HTMap node -->
     <node pkg="htmap" type="htmap_node" name="HTMap" output="screen">
