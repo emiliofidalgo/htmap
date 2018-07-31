@@ -128,7 +128,7 @@ function plot_times(dtimes_file, lc_file)
     l = legend('Location Likelihood', 'Image Likelihood', 'Epipolar Analysis', 'Bayes (Predict + Update)', 'Location', 'NorthWest');
     set(l, 'FontSize', leg_size);
     hold off;
-    print -djpeg -r300 exectimes_lc
+    % print -djpeg -r300 exectimes_lc
     
     disp('----');    
 end

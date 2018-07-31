@@ -75,7 +75,7 @@ function pr_curves
     set(l, 'FontSize', leg_size);
     title('City Center');
     
-    print -djpeg -r300 curvepr_cc
+    %print -djpeg -r300 curvepr_cc
     hold off;
     
     % NewCollege results
@@ -89,7 +89,7 @@ function pr_curves
     set(l, 'FontSize', leg_size);
     title('New College');    
     
-    print -djpeg -r300 curvepr_nc
+    %print -djpeg -r300 curvepr_nc
     hold off;
     
     % KITTI00 results
@@ -103,7 +103,7 @@ function pr_curves
     set(l, 'FontSize', leg_size);
     title('KITTI 00');
     
-    print -djpeg -r300 curvepr_kitti00
+    %print -djpeg -r300 curvepr_kitti00
     hold off;
     
     % KITTI05 results
@@ -117,7 +117,7 @@ function pr_curves
     set(l, 'FontSize', leg_size);
     title('KITTI 05');
     
-    print -djpeg -r300 curvepr_kitti05
+    %print -djpeg -r300 curvepr_kitti05
     hold off;
     
     % KITTI06 results
@@ -131,7 +131,7 @@ function pr_curves
     set(l, 'FontSize', leg_size);
     title('KITTI 06');
     
-    print -djpeg -r300 curvepr_kitti06
+    %print -djpeg -r300 curvepr_kitti06
     hold off;
     
     % StaLucia results
@@ -145,7 +145,7 @@ function pr_curves
     set(l, 'FontSize', leg_size);
     title('St. Lucia');
     
-    print -djpeg -r300 curvepr_stlucia
+    %print -djpeg -r300 curvepr_stlucia
     hold off;
     
     function plot_common()

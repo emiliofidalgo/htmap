@@ -155,7 +155,7 @@ function plot_times_bars(dtimes_file, lc_file, t, show_legend)
     xlabel('# of frame (10^2)');
     ylabel('Average Exec. Time (ms)');
     
-    print -dpng -r300 exectimes
+    % print -dpng -r300 exectimes
     
     % Computing global averages
     disp('----');

@@ -50,5 +50,5 @@ function plot_path(loops_file, coords_file)
     hold off;
     axis off;
     
-    print -dpng -r300 image
+    % print -dpng -r300 image
 end
