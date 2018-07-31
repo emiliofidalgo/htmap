@@ -38,21 +38,27 @@ If you use this code, please cite:
   sudo apt-get install libflann-dev libboost-system-dev libboost-filesystem-dev
   ```
 
-2. Clone [OBIndex](http://github.com/emiliofidalgo/obindex) in your workspace and change the current branch to *kinetic*:
+2. Clone OBIndex in your workspace and change the current branch to *kinetic*:
   ```
   cd ~/your_workspace/src
   git clone http://github.com/emiliofidalgo/obindex.git
+  cd obindex
   git checkout kinetic
   ```
 
-3. Clone the HTMap repository into your workspace:
+3. Clone HTMap in your workspace:
   ```
   cd ~/your_workspace/src
   git clone http://github.com/emiliofidalgo/htmap.git
   ```
 
-4. Compile the package using, as usual, the `catkin_make` command:
+4. Compile the packages using, as usual, the `catkin_make` command:
   ```
   cd ..
   catkin_make -DCMAKE_BUILD_TYPE=Release
+  ```
+
+5. As a final step, HTMap requires a writable directory where it stores results and serializes some data. Therefore, we recommend to create one for this purpose:
+  ```
+  mkdir -p ~/Desktop/htmap
   ```
