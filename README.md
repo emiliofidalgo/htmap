@@ -30,3 +30,25 @@ If you use this code, please cite:
   month={Oct}
 }
 ```
+
+# Installation
+
+1. First of all, you need to install [OBIndex](http://github.com/emiliofidalgo/obindex) in your workspace and its dependencies as a ROS package.
+
+2. Change the current branch of the OBIndex repository to *kinetic*:
+  ```
+  roscd obindex
+  git checkout -b kinetic
+  ```
+
+3. Clone the HTMap repository into your workspace:
+  ```
+  cd ~/your_workspace/src
+  git clone http://github.com/emiliofidalgo/htmap.git
+  ```
+
+4. Compile the package using, as usual, the `catkin_make` command:
+  ```
+  cd ..
+  catkin_make -DCMAKE_BUILD_TYPE=Release
+  ```
