@@ -64,3 +64,11 @@ If you use this code, please cite:
   ```
   mkdir -p ~/Desktop/htmap
   ```
+
+# Usage
+
+Pending ...
+
+# Contact
+
+If you have problems or questions using this code, please contact the author (emilio.garcia@uib.es). [Feature requests](http://github.com/emiliofidalgo/htmap/issues) and [contributions](http://github.com/emiliofidalgo/htmap/pulls) are totally welcome.
