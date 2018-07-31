@@ -33,12 +33,16 @@ If you use this code, please cite:
 
 # Installation
 
-1. First of all, you need to install [OBIndex](http://github.com/emiliofidalgo/obindex) in your workspace and its dependencies as a ROS package.
-
-2. Change the current branch of the OBIndex repository to *kinetic*:
+1. First of all, you need to install [OBIndex](http://github.com/emiliofidalgo/obindex) dependencies:
   ```
-  roscd obindex
-  git checkout -b kinetic
+  sudo apt-get install libflann-dev libboost-system-dev libboost-filesystem-dev
+  ```
+
+2. Clone [OBIndex](http://github.com/emiliofidalgo/obindex) in your workspace and change the current branch to *kinetic*:
+  ```
+  cd ~/your_workspace/src
+  git clone http://github.com/emiliofidalgo/obindex.git
+  git checkout kinetic
   ```
 
 3. Clone the HTMap repository into your workspace:
