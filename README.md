@@ -67,7 +67,23 @@ If you use this code, please cite:
 
 # Usage
 
-Pending ...
+- To run HTMap, use the provided launch file:
+  ```
+  roslaunch htmap htmap.launch image_dir:="/directory/with/a/sequence/of/images" working_dir:="~/Desktop/htmap"
+  ```
+  where *image_dir* is a directory containing the sequence of images to be processed and *working_dir* is the directory where the algorithm will store their results and serialization data. This might be the directory we created during the installation procedure.
+
+  There exist several execution parameters that can be configured for launching HTMap. See the next section for a description of each of them.
+
+- During the execution, the screen will show information about the algorithm. Loop closures found by HTMap will be also indicated.
+
+- After a succesful execution, HTMap generates as output several text files. These files are stored in the *working_dir/results* directory. To speed up the mapping process, some of them are empty, since the corresponding parts of the code are commented. They can be uncommented if needed. The most important files are:
+
+    - *htmap_loops_ninliers.txt*, which includes a binary matrix where entry (*i, j*) is 1 if image *i* and image *j* can be considered as the same place, and 0 otherwise. Therefore, the *i-th* row represents the possible loop closures for image *i*. The name *ninliers* refers to the parameter used as the minimum number of inliers to accept a loop. See the paper for further details.
+
+    - *htmap_img2loc_ninliers.txt*, where each line contains the image identifier and the location assigned to that image.
+
+- In order to compute Precision / Recall metrics, we provide some Matlab scripts. We also provide ground truth files for the datasets used in the paper in the format required for these scripts.
 
 # Contact
 
