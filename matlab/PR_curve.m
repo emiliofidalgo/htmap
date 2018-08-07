@@ -16,7 +16,7 @@
 % You should have received a copy of the GNU General Public License
 % along with htmap. If not, see <http://www.gnu.org/licenses/>.
 
-function PR_batch(directory, gt_file, gt_neigh)
+function PR_curve(directory, gt_file, gt_neigh)
     files = get_files(directory, '.txt');
     Ps = [1.0];
     Rs = [0.0];
