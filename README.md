@@ -108,6 +108,46 @@ PR_curve(res_dir, gt_file, true);
 
 - Contact the authors for more information about the other figures in the article.
 
+# Parameters
+
+- `image_dir`: Directory where the input images are stored. The images should be named consecutively using the same number of digits. For instance: *image00001.jpg*, *image00002.jpg*, and so on.
+
+- `working_dir`: Directory where HTMap operates and where the final results will be stored. **This directory should be writable!**.
+
+- `detector`: Local feature detector method. Options: *FAST*, *BRISK*, *SIFT*, *SURF*, *ORB* and *STAR*. Default: *FAST*.
+
+- `max_total_kps`: Number of features to find in each input image. Default: *1000*.
+
+- `descriptor`: Local feature descriptor method. Options: *FREAK*, *BRIEF*, *BRISK*, *ORB* and *LDB*. Default: *LDB*.
+
+- `gdescriptor`: Holistic method used to describe an image as a whole. Options: *PHOG*, *WI-SIFT*, *WI-SURF*, *WI-LDB* and *Brief-Gist*. Default: *PHOG*.
+
+- `load_feats`: If *true*, image keypoints and descriptions are loaded from disk, from a previous execution. Otherwise, images are described.
+
+- `match_method`: Method used to match between two images. Options: *ratio* and *crosscheck*. Default: *ratio*.
+
+- `match_ratio`: If `match_method` is *ratio*, nearest neighbour distance ratio to match descriptors. Usually, a value of 0.8 is a good option here.
+
+- `locLC_thresh`: Threshold to select locations according to their similarity with the current image during the coarse loop closure stage. Default: 0.65.
+
+- `imageLC_min_inliers`: Minimum number of inliers to consider a loop closure candidate as valid. Default: 45.
+
+- `imageLC_disc_recent`: Number of recent frames discarded to avoid loop closures with images close in time. This is highly dependant of the environment and should be configured accordingly.
+
+- `imageLC_tloop`: Minimum Bayes Filter sum of probabilities to consider an image as a possible candidate. Default: 0.8.
+
+- `loc_max_images`: Maximum number of images per location. Default: 500.
+
+- `max_sim_newnode`: Similarity to consider a new node. Default: 0.20.
+
+- `batch`: If *true*, the algorithm is executed several times according to the configuration indicated by the *inliers_* parameters. Otherwise, it is executed only once.
+
+- `inliers_begin`: If `batch` is *true*, the number of inliers to be used at the first execution of HTMap.
+
+- `inliers_end`: If `batch` is *true*, the number of inliers where the process will stop.
+
+- `inliers_step`: If `batch` is *true*, the number of inliers to increment between each execution of HTMap.
+
 # Contact
 
 If you have problems or questions using this code, please contact the author (emilio.garcia@uib.es). [Feature requests](http://github.com/emiliofidalgo/htmap/issues) and [contributions](http://github.com/emiliofidalgo/htmap/pulls) are totally welcome.
