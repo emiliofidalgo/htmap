@@ -69,21 +69,44 @@ If you use this code, please cite:
 
 - To run HTMap, use the provided launch file:
   ```
-  roslaunch htmap htmap.launch image_dir:="/directory/with/a/sequence/of/images" working_dir:="~/Desktop/htmap"
+  roslaunch htmap htmap.launch image_dir:="/image/dir" working_dir:="~/Desktop/htmap"
   ```
   where *image_dir* is a directory containing the sequence of images to be processed and *working_dir* is the directory where the algorithm will store their results and serialization data. This might be the directory we created during the installation procedure.
 
-  There exist several execution parameters that can be configured for launching HTMap. See the next section for a description of each of them.
+  There exist several execution parameters that can be configured when running HTMap. See next section for a description of each of them.
 
-- During the execution, the screen will show information about the algorithm. Loop closures found by HTMap will be also indicated.
+- During the execution, screen will show information about the algorithm, indicating when a loop closure is found.
 
-- After a succesful execution, HTMap generates as output several text files. These files are stored in the *working_dir/results* directory. To speed up the mapping process, some of them are empty, since the corresponding parts of the code are commented. They can be uncommented if needed. The most important files are:
+- After a succesful execution, HTMap generates, as output, several text files. These files are stored in the *working_dir/results* directory. To speed up the mapping process, some of them are empty, since the corresponding parts of the code are commented. They can be uncommented if needed. The most important files are:
 
-    - *htmap_loops_ninliers.txt*, which includes a binary matrix where entry (*i, j*) is 1 if image *i* and image *j* can be considered as the same place, and 0 otherwise. Therefore, the *i-th* row represents the possible loop closures for image *i*. The name *ninliers* refers to the parameter used as the minimum number of inliers to accept a loop. See the paper for further details.
+    - *htmap_loops_ninliers.txt*, which is a binary matrix where entry (*i, j*) is 1 if image *i* and image *j* can be considered as the same place, and 0 otherwise. Therefore, the *i-th* row represents the possible loop closures for image *i*. The name *ninliers* refers to the value of the parameter used as the minimum number of inliers to accept a loop. See the paper for further details.
 
-    - *htmap_img2loc_ninliers.txt*, where each line contains the image identifier and the location assigned to that image.
+    - *htmap_img2loc_ninliers.txt*, where each line contains the identifier of each image and the location to which that image was assigned during the process.
 
-- In order to compute Precision / Recall metrics, we provide some Matlab scripts. We also provide ground truth files for the datasets used in the paper in the format required for these scripts.
+- We provide several Matlab scripts to process the resulting files. Along with these scripts, we also provide ground truth files for the datasets used in the paper. If you want to use your own dataset, you should generate your own ground truth file using the same format.
+
+- In order to obtain a precision / recall value, open Matlab and select the provided *matlab* directory as your working directory. Next, use the following sequence of commands, adapting, of course, the paths (*CC* stands for the *City Centre* dataset):
+```
+loop_file = '~/Desktop/htmap/results/htmap_loops_20.txt';
+gt_file = 'gtruths/groundtruth_CC.mat';
+PR(loop_file, gt_file, true);
+```
+
+- You can also generate a precision / recall curve after obtaining a set of precision / recall values. In our original paper, these curves were generated modifying the minimum number of inliers to accept a loop. To do that:
+    - Set the parameter *batch* to *true*.
+    - Set the parameter *inliers_begin* to the number of inliers that you want to use at the first execution of HTMap.
+    - Set the parameter *inliers_end* to the number of inliers where the process will stop.
+    - Set the parameter *inliers_step* to the number of inliers to increment between each execution of HTMap.
+
+
+- Running HTMap under these conditions will execute the algorithm several times modifying the number of inliers and storing the corresponding files in the *results* directory. The precision / recall curve can be obtained using the following sequence of commands, adapting, again, the paths (*CC* stands for the *City Centre* dataset):
+```
+res_dir = '~/Desktop/htmap/results/';
+gt_file = 'gtruths/groundtruth_CC.mat';
+PR_curve(res_dir, gt_file, true);
+```
+
+- Contact the authors for more information about the other figures in the article.
 
 # Contact
 
