@@ -114,7 +114,9 @@ void Statistics::writeResults(const std::string& dir, int inliers)
     {
         for (int j = 0; j < loops.cols; j++)
         {
-            loops_file << loops(i, j) << "\t";
+	    	if(loops(i, j) == 1) {
+	            loops_file << j << "\t";
+	    	}
             // Uncomment these lines if you want to save the full Bayes filter info
 
             //prior_file << prior(i, j) << "\t";
