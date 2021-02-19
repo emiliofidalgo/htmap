@@ -26,7 +26,7 @@ function [precision, recall, results] = PR(loop_file, gt_file, load_file, gt_nei
 
     % Loading loops and ground truth files.
     if load_file == 1
-        loops = load(loop_file);
+        loops = load_loops_data(loop_file);
     else
         loops = loop_file;
     end
