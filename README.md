@@ -31,7 +31,11 @@ If you use this code, please cite:
   doi={10.1109/TRO.2017.2704598},
   month={Oct}
 }
-```
+``` 
+
+# Singularity Container
+
+Find the Singularity image definition files and instructions provided in [ros](ros) folder
 
 # Installation
 

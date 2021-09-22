@@ -1,0 +1,14 @@
+Bootstrap: docker
+From: ros:kinetic-ros-core-xenial
+
+%post
+
+  apt update
+
+  apt install -y build-essential
+  apt install -y libflann-dev libboost-system-dev libboost-filesystem-dev
+  apt -y install ros-kinetic-opencv3 ros-kinetic-cv-bridge ros-kinetic-image-transport
+
+%environment
+  echo "sourcing ros kinetic setup.sh file"
+  . /opt/ros/kinetic/setup.sh
